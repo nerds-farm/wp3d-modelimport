@@ -1,0 +1,59 @@
+canvas.threed-canvas{
+	outline: 1px dashed #ccc;
+}
+
+.components-panel-col{
+    flex-flow: column;
+    padding: 10px 0;
+}
+.panelbody-heading{
+    background-color: #f5f5f5;
+    padding: 10px;
+    margin: 15px -15px !important;
+}
+
+/* TOOLS TRANSFORM */
+.wp3d-tools-object3d{
+	top: 10px;
+	right: 10px;
+	width: auto;
+	
+	color: #000;
+	position: absolute;
+	
+	display: none;
+}
+.wp3d-tools-object3d.active{
+	display: block;
+}
+.wp3d-tools-object3d > span{
+	padding: 5px;
+	border-radius: 4px;
+	border: #ccc solid 1px;
+	background-color: #FFF;
+	margin-right: 5px;
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	cursor: pointer;
+	background-size: contain;
+
+	text-align: center;
+	font-size: 12px;
+	transition: background-color 0.5s ease;
+}
+.wp3d-tools-object3d > span.active{
+	background-color: #ccc;
+}
+.wp3d-tools-object3d-pos{
+	background-image: url('../../../assets/img/tools/position.svg');
+}
+.wp3d-tools-object3d-rot{
+	background-image: url('../../../assets/img/tools/rotation.svg');
+}
+.wp3d-tools-object3d-scale{
+	background-image: url('../../../assets/img/tools/scale.svg');
+}
+
+
+

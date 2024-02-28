@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name:       WP3D ModelImport
- * Description:       Example block scaffolded with Create Block tool.
+ * Description:       The import of models is allowed from Media Library, Folders and also from CDN. There are many allowed formats. Ideal to display all kinds models. The aim is to combine 3D and Web Design..
  * Requires at least: 5.9
  * Requires PHP:      7.0
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            Nerds.farm srl
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html

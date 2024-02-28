@@ -91,7 +91,7 @@ class License {
     }
 
     public function _notice($message, $type = 'success') {
-        echo '<div class="notice is-dismissible notice-' . $type . ' notice-alt"><p>' . $message . '</p></div>';
+        echo '<div class="notice is-dismissible notice-' . $type . ' notice-alt wp3d-notice"><p><img class="wp3d-logo-admin" src="' . WP3D_MODELIMPORT_PLUGIN_URL . 'assets/img/wp3d.png" width="30" style="width: 30px; vertical-align: top;" /> ' . $message . '</p></div>';
     }
 
     public function get_plugin_folder() {

@@ -1,0 +1,51 @@
+/* scene 3D */
+// wp-block-wp3d-scene3d
+
+
+
+canvas.threed-canvas{
+    width: 100%;
+    height: 100%;
+}
+
+
+
+/* TOOLS */
+:root{
+	--wp3d-progress-color: #000000;
+}
+.wp3d-container{
+	position: relative;
+	
+}
+.wp3d-container .wp3d-loading-message{
+	display: none;
+	padding: 20px;
+	border-radius: 10px;
+	max-width: 300px;
+	background-color: rgba(0,0,0,0.6);
+	color: #FFFFFF;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+}
+
+.wp-block-wp3d-modelimport{
+	position: relative;
+}
+.wp-block-wp3d-modelimport .wp3d-scene-container{
+	position: relative;
+	display: flex;
+}
+.wp-block-wp3d-modelimport.wp3d-viewport_fixed{
+	position: fixed;
+	left: 0;
+	top: 0;
+	padding: 0;
+	z-index: 0;
+	max-width: 100%;
+	width: 100vw;
+	height: 100vh;
+
+}
