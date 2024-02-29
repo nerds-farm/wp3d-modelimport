@@ -2,7 +2,7 @@
 	"name": "wp3d-modelimport",
 	"version": "0.1.0",
 	"description": "Example block scaffolded with Create Block tool.",
-	"author": "The WordPress Contributors",
+	"author": "Nerds.Farm srl",
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",
 	"scripts": {

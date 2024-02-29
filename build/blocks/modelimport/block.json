@@ -6,11 +6,15 @@
   "title": "Model Import",
   "category": "wp3d-blocks",
   "icon": "modelimport-wp3d",
-  "description": "",
+  "description": "Import and view your 3D models on the site and make them interactive.",
   "attributes": {
     "ide": {
       "type": "string",
       "default": "wp3d-modelimport3d-0"
+    },
+    "preview": {
+      "type": "boolean",
+      "default": false
     },
     "countLight": {
       "type": "number",
@@ -206,6 +210,10 @@
       "type": "number",
       "default": 1
     },
+    "spot_intensity": {
+      "type": "number",
+      "default": 1
+    },
     "renderer_physicallyCorrectLights": {
       "type": "boolean",
       "default": false
@@ -244,7 +252,9 @@
     ]
   },
   "example": {
-    "attributes": {}
+    "attributes": {
+      "preview": true
+    }
   },
   "textdomain": "wp3d-blocks",
   "editorScript": [

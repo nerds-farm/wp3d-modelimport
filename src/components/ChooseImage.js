@@ -32,8 +32,8 @@ function ChooseImage(prop) {
   let allowedTipe = ['image']
   return (
       <>
-      <div className="editor-post-image-texture">
-        <h3><Icon icon="format-image" /> { prop.label ? __(prop.label, 'wp3d-blocks') : __('Image', 'wp3d-blocks')}</h3>
+      <div className="choose-wp3d">
+        <h3><Icon icon="format-image" /> { prop.label ? __(prop.label, 'wp3d-earth') : __('Image', 'wp3d-earth')}</h3>
         <MediaUploadCheck>
           <MediaUpload
             onSelect={onSelectMedia}
@@ -48,7 +48,7 @@ function ChooseImage(prop) {
                 { ! prop.value.id ? (
                   
                   <div>
-                  { prop.chooselabel ? __(prop.chooselabel + ' ' + prop.mimetype, 'wp3d-blocks') : __('Choose an image', 'wp3d-blocks')}
+                  { prop.chooselabel ? __(prop.chooselabel + ' ' + prop.mimetype, 'wp3d-earth') : __('Choose an image', 'wp3d-earth')}
                   </div>
                   
                   ) : (
@@ -65,60 +65,22 @@ function ChooseImage(prop) {
           <PanelRow>
             <MediaUploadCheck>
               <MediaUpload
-                title={__('Replace image', 'wp3d-blocks')}
+                title={__('Replace image', 'wp3d-earth')}
                 value={prop.value.id}
                 onSelect={onSelectMedia}
                 allowedTypes={['image']}
                 render={({open}) => (
 
-                  <Button variant="secondary" onClick={open}>{__('Replace image', 'wp3d-blocks')}</Button>
+                  <Button variant="secondary" onClick={open}>{__('Replace image', 'wp3d-earth')}</Button>
                 )}
               />
             </MediaUploadCheck>
             <MediaUploadCheck>
-              <Button isDestructive onClick={removeMedia}>{__('Remove image', 'wp3d-blocks')}</Button>
+              <Button isDestructive onClick={removeMedia}>{__('Remove image', 'wp3d-earth')}</Button>
             </MediaUploadCheck>
           </PanelRow>
         }
-        {/* {prop.value.id != 0 && 
-          
-        } */}
       </div>
-
-
-
-      {/* 
-      <MediaUploadCheck>
-        <MediaUpload
-          onSelect={(media) => {
-            setAttributes({
-              mediaFile: {
-              title: media.title,
-              filename: media.filename,
-              url: media.url,
-              updated: ''
-              }
-            })
-            }}
-          allowedTypes={ ALLOWED_MEDIA_TYPES }
-          multiple={false}
-          value={ media.id }
-          render={({ open }) => (
-            <>
-              <button variant="primary" onClick={open}>
-              {mediaFile === null
-                ? '+ Upload file'
-                : 'x Upload new file'}
-              </button>
-              <p>
-              {mediaFile === null
-                ? ''
-                : '(' + mediaFile.title + ')'}
-              </p>
-            </>
-            )}
-        />
-			</MediaUploadCheck> */}
     </>
 
   )

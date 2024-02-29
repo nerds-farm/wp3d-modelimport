@@ -30,7 +30,6 @@ import {
 	__experimentalNumberControl as NumberControl
 } from '@wordpress/components';
 
-
 /**
  * React hook that is used to mark the block wrapper element.
  * It provides all the necessary props like the class name.
@@ -57,6 +56,9 @@ import E_threed_class_light from '../../classes/class.e_threed_light.js';
 //SHADERS for contactshadow
 import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader.js';
+
+//images
+import previewImage from '../../../assets/img/modelimport_cover.jpg'
 
 import Appender from '../../components/Appender.js';
 /**
@@ -93,10 +95,12 @@ export default function Edit( props ) {
 	const { attributes, setAttributes, clientId } = props;
 
 	const { ide,
+		preview,
 		align,
 		mediaId,
 		countLight,
 		light_intensity,
+		spot_intensity,
 		sky_transparent,
 		sky_color,
 		sky_showimage,
@@ -126,7 +130,6 @@ export default function Edit( props ) {
 		cs_darkness,
 		cs_sensibility,
 		cs_opacity,
-		renderer_physicallyCorrectLights,
 		renderer_outputEncoding,
 		renderer_toneMapping,
 		renderer_toneMapping_exposure,
@@ -449,6 +452,14 @@ export default function Edit( props ) {
 
 	const h = viewport_ratio == "custom" ? {height: viewport_height} : {};
 	
+	if ( preview ) {
+		return(
+			<Fragment>
+				<img width="100%" height="auto" src={previewImage} />
+			</Fragment>
+		);
+	}
+	
 	return (
 		<>
 		<div ref={ scopeRef } id={ `wp3d-importmodel3d-${ instanceId }` } className={`wp3d-instance-element align${align}`}>
@@ -625,16 +636,6 @@ export default function Edit( props ) {
 				title={ __( 'Render', 'wp3d-blocks' )}
 				initialOpen={false}
 				>
-				<ToggleControl
-					label={ __( 'Physically Correct Lights', 'wp3d-blocks' )}
-					// help={
-					// 	renderer_physicallyCorrectLights
-					// 		? 'YES'
-					// 		: 'NO'
-					// }
-					checked={ renderer_physicallyCorrectLights }
-					onChange={ ( val ) => onChangeValue("renderer_physicallyCorrectLights",{ renderer_physicallyCorrectLights: val }) }
-				/>
 				{/* <SelectControl
 					label={ __( 'Output Encoding', 'wp3d-blocks' )}
 					value={ renderer_outputEncoding }
@@ -682,16 +683,25 @@ export default function Edit( props ) {
 			initialOpen={false}
 			>
 				<RangeControl
-					label={ __( 'Light Intensity', 'wp3d-blocks' )}
+					label={ __( 'Ambient Light Intensity', 'wp3d-blocks' )}
 					value={ light_intensity }
 					onChange={ ( val ) => onChangeValue("light_intensity",{ light_intensity: val }) }
 					min={ 0.01 }
-					max={ 5 }
+					max={ 10 }
 					step={ 0.01 }
 					allowReset={true}
-					resetFallbackValue={ 0.01 }
+					resetFallbackValue={ 1 }
 				/>
-
+				<RangeControl
+					label={ __( 'Spot Light Intensity', 'wp3d-blocks' )}
+					value={ spot_intensity }
+					onChange={ ( val ) => onChangeValue("spot_intensity",{ spot_intensity: val }) }
+					min={ 0.01 }
+					max={ 10 }
+					step={ 0.01 }
+					allowReset={true}
+					resetFallbackValue={ 1 }
+				/>
 			</PanelBody>
 			
 			<PanelBody 
@@ -820,7 +830,18 @@ export default function Edit( props ) {
 					checked={ autorotate }
 					onChange={ ( val ) => onChangeValue("autorotate",{ autorotate: val }) }
 				/>
-				
+				{ autorotate && (
+						<RangeControl
+						label="Speed"
+						value={ autorotateSpeed }
+						onChange={ ( val ) => onChangeValue("autorotateSpeed",{ autorotateSpeed: val }) }
+						min={ 0.1 }
+						max={ 20 }
+						step={ 0.1 }
+						resetFallbackValue={1}
+						/>
+					)
+				}
 			</PanelBody>
 			<PanelBody 
 			title={ __( 'Camera', 'wp3d-blocks' )}

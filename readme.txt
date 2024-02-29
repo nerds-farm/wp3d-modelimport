@@ -1,10 +1,13 @@
-=== WP3D Blocks ===
-Contributors:      The WordPress Contributors
-Tags:              block
-Tested up to:      6.0
-Stable tag:        0.1.0
-License:           GPL-2.0-or-later
-License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+=== WP3D ModelImport ===
+Author:            Nerds Farm srl
+Contributors:      poglie, frapesce
+Tags:              block, wp3d, three.js, 3d, model, glb, gltf
+Requires at least: 6.0
+Requires PHP:      7.4
+Tested up to:      6.4
+Stable tag:        1.0
+License:           GPLv3
+License URI:       https://www.gnu.org/licenses/gpl-3.0.html
 
 Example block scaffolded with Create Block tool.
 
@@ -44,18 +47,8 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
 
 == Changelog ==
-= 0.3.0 =
-* Release 0.3.0 
-* New ModelImport3D
-
-= 0.2.0 =
-* Release 0.2.0 
-* New Earth3D
-
-= 0.1.0 =
-* Release 0.1.0 
-* New Street3D
-* Base Plugin
+= 1.0.0 =
+* ModelImport3D
 
 == Arbitrary section ==
 

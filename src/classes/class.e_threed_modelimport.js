@@ -197,7 +197,6 @@ class e_threed_class_modelimport {
         this.loadingmessage = jQuery('#'+this.id_scope).find('.wp3d-loading-message');
 
         //RENDERER
-        this.physicallyCorrectLights = Boolean(this.elementSettings.renderer_physicallyCorrectLights) || false;
         this.outputEncoding = this.elementSettings.renderer_outputEncoding || 'sRGBEncoding';
         this.toneMapping = this.elementSettings.renderer_toneMapping || 'NoToneMapping';
         this.toneMappingExposure = this.elementSettings.renderer_toneMapping_exposure || 0.68;
@@ -267,6 +266,7 @@ class e_threed_class_modelimport {
         this.ambientLight = null;
         this.ambientlightColor = 0xFFFFFF; //this.elementSettings.ambientlight_color || 0xFFFFFF;
         this.ambientlightIntensity = this.elementSettings.light_intensity || 1;
+        this.spotlightIntensity = this.elementSettings.spot_intensity || 1;
         this.cameraLight = null;
 
         //SKY
@@ -558,11 +558,13 @@ class e_threed_class_modelimport {
         // this.scene.add( light3 );
 
         // -------------
-        if(this.elementSettings.sky_environmentimage){
-            this.ambientlightIntensity = 3;
-        }else{
-            this.ambientlightIntensity = this.elementSettings.light_intensity || 1;
-        }
+        // if(this.elementSettings.sky_environmentimage){
+        //     this.ambientlightIntensity = 3;
+        // }else{
+        //     this.ambientlightIntensity = this.elementSettings.light_intensity || 1;
+        // }
+        this.ambientlightIntensity = this.elementSettings.light_intensity || 1;
+        this.spotlightIntensity = this.elementSettings.spot_intensity || 1;
         //console.log('al'+this.ambientLight)
         if(!this.ambientLight){
             //alert('al')
@@ -573,10 +575,10 @@ class e_threed_class_modelimport {
             this.scene.add( this.ambientLight );
         }
        
-        if(!this.elementSettings.sky_environmentimage){
+        //if(!this.elementSettings.sky_environmentimage){
             //alert(this.elementSettings.sky_environmentimage+' add cameraLight')
             if(!this.cameraLight){
-                this.cameraLight = new DirectionalLight( 0xffffff, this.ambientlightIntensity );
+                this.cameraLight = new DirectionalLight( 0xffffff, this.spotlightIntensity );
                 this.cameraLight.castShadow = true;
                 this.cameraLight.name = 'cl';
                 this.cameraLight.position.set(100,0,100)
@@ -584,7 +586,7 @@ class e_threed_class_modelimport {
                 this.scene.add( this.camera );
             }
             
-        }
+        //}
         //console.log(this.scene)
     }
     removeLight(){
@@ -906,7 +908,6 @@ class e_threed_class_modelimport {
                 if(this.cbfn && !$fromUpdate){
                     
                     //Render
-                    this.renderer.physicallyCorrectLights = this.physicallyCorrectLights;
                     this.updateToneMapping();
                     this.renderer.toneMappingExposure = this.toneMappingExposure;
                     this.updateOutputEncoding();
@@ -1905,11 +1906,6 @@ class e_threed_class_modelimport {
 
 
         // RENDER --------------------------------------
-        if ('renderer_physicallyCorrectLights' === propertyName) {
-            this.physicallyCorrectLights = Boolean(this.elementSettings.renderer_physicallyCorrectLights);
-            this.renderer.physicallyCorrectLights = this.physicallyCorrectLights;
-            this.render();
-        }
         if ('renderer_toneMapping' === propertyName) {
             this.toneMapping = this.elementSettings.renderer_toneMapping || 'NoToneMapping';
             this.updateToneMapping();
@@ -1958,14 +1954,19 @@ class e_threed_class_modelimport {
             this.render();
         }
         
-        
         if ('sky_environmentimage' === propertyName) {
+            //EEE
             if(this.elementSettings.sky_environmentimage){
                 this.scene.environment = this.sky_texture;
             }else{
                 this.scene.environment = null;
             }
+
+            this.updateLight();
+            
+            
         }
+
         if ('material_metalness' === propertyName) {
             
         }
@@ -1977,6 +1978,13 @@ class e_threed_class_modelimport {
             this.ambientlightIntensity = this.elementSettings.light_intensity || 1;
             
             this.ambientLight.intensity = this.ambientlightIntensity;
+            
+            this.render();
+        }
+        if ('spot_intensity' === propertyName) {
+            this.spotlightIntensity = this.elementSettings.spot_intensity || 1;
+            
+            this.cameraLight.intensity = this.spotlightIntensity;
             
             this.render();
         }
