@@ -3,7 +3,7 @@ import { PanelRow, Icon, Button } from '@wordpress/components';
 import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { useState, useEffect, useRef, Fragment } from '@wordpress/element';
 
-function ChooseModel3d(prop) {
+function ChooseImage(prop) {
   const [mediaId, setMediaId] = useState(0);
   const [mediaUrl, setMediaUrl] = useState('');
   const [media, setMedia] = useState({"id":0, "url":"", "alt":"", "title":""});
@@ -28,20 +28,8 @@ function ChooseModel3d(prop) {
     $mime_types['gltf']  = 'model/gltf-json';
     $mime_types['obj']  = 'text/plain';
     $mime_types['zip']  = 'application/zip';
-    $mime_types['dae']  = 'model/dae';
-    $mime_types['fbx']  = 'model/fbx';
   */
-  //let allowedTipe = prop.mimetype; //['model/gltf-binary']
-  let allowedTipe = [
-    'model/vrml',
-    'model/gltf-binary',
-    'model/gltf-json',
-    'application/octet-stream',
-    'text/plain',
-    'application/zip',
-    'model/dae',
-    'model/fbx'
-  ]
+  let allowedTipe = ['image']
   return (
       <>
       <div className="choose-wp3d">
@@ -54,7 +42,7 @@ function ChooseModel3d(prop) {
             multiple={false}
             render={({open}) => (
               <Button 
-                className={prop.value.id == 0 ? 'editor-post-featured-image__toggle' : 'editor-post-featured-image__preview edit-post-post-schedule__toggle is-tertiary'}
+                className={prop.value.id == 0 ? 'editor-post-featured-image__toggle' : 'editor-post-featured-image__preview'}
                 onClick={open}
               >
                 { ! prop.value.id ? (
@@ -65,8 +53,8 @@ function ChooseModel3d(prop) {
                   
                   ) : (
                   
-                  
-                 <p className="">{ prop.value.url }</p>
+                  <img src={ prop.value.url } />
+                 
                   )
                 }
               </Button>
@@ -80,7 +68,7 @@ function ChooseModel3d(prop) {
                 title={__('Replace image', 'wp3d-earth')}
                 value={prop.value.id}
                 onSelect={onSelectMedia}
-                allowedTypes={allowedTipe}
+                allowedTypes={['image']}
                 render={({open}) => (
 
                   <Button variant="secondary" onClick={open}>{__('Replace image', 'wp3d-earth')}</Button>
@@ -98,4 +86,4 @@ function ChooseModel3d(prop) {
   )
 }
 
-export default ChooseModel3d;
+export default ChooseImage;

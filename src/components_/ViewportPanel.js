@@ -34,15 +34,15 @@ export default function ViewportPanel( prop ) {
     return (
         <>
           <PanelBody 
-			title={ __( "Viewport",  "wp3d-earth" )}
+			title={ __( 'Viewport', 'wp3d-blocks' )}
 			initialOpen={false}
 			>
                 {/* Ratio(select) */}
 				<SelectControl
-					label={__("Ratio", "wp3d-earth")}
+					label={__("Ratio", "wp3d-blocks")}
 					value={ viewport_ratio }
 					options={ [
-						{ label: __("Custom", "wp3d-earth"), value: 'custom' },
+						{ label: 'Custom', value: 'custom' },
 						{ label: '1/1', value: '1/1' },
 						{ label: '4/3', value: '4/3' },
 						{ label: '16/9', value: '16/9' },
@@ -52,7 +52,7 @@ export default function ViewportPanel( prop ) {
 				/>
 				{/* Height(Number Unit) */}
 				{viewport_ratio == "custom" && <UnitControl 
-					label={__("Height", "wp3d-earth")}
+					label={__("Height", "wp3d-blocks")}
 					isUnitSelectTabbable
 					onChange={ ( val ) => onChangeValue("viewport_height",{ viewport_height: val }) } 
 					onUnitChange={ e => console.log("new unit "+e) }
@@ -60,11 +60,11 @@ export default function ViewportPanel( prop ) {
 					value={ viewport_height } />}
 				{/* fixed(Switcher) */}
 				<ToggleControl
-					label={__("Fixed", "wp3d-earth")}
+					label="Fixed"
 					checked={ viewport_fixed }
 					onChange={ ( val ) => onChangeValue("viewport_fixed",{ viewport_fixed: val }) }
 				/>
-				<p>{__("This option forces this block to remain fixed in fullscreen below everything.", "wp3d-earth")}</p>
+				<p>{__("Questa opzione forza questo blocco a restare fisso a tutto schermo sotto a tutto.", "wp3d-blocks")}</p>
             </PanelBody>
         </>
       )

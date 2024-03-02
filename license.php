@@ -13,23 +13,27 @@ namespace WP3D;
  * Generic Skin for the WordPress Upgrader classes. This skin is designed to be extended for specific purposes.
  * @since 2.8.0
  */
-class Envato_Upgrader_Skin extends \WP_Upgrader_Skin {
+if (!class_exists('Envato_Upgrader_Skin')) {
 
-    public function feedback($string, ...$args) {
-        if (isset($this->upgrader->strings[$string])) {
-            $string = $this->upgrader->strings[$string];
-        }
-        if (strpos($string, '%') !== false) {
-            if ($args) {
-                $args = array_map('strip_tags', $args);
-                $args = array_map('esc_html', $args);
-                $string = vsprintf($string, $args);
+    class Envato_Upgrader_Skin extends \WP_Upgrader_Skin {
+
+        public function feedback($string, ...$args) {
+            if (isset($this->upgrader->strings[$string])) {
+                $string = $this->upgrader->strings[$string];
+            }
+            if (strpos($string, '%') !== false) {
+                if ($args) {
+                    $args = array_map('strip_tags', $args);
+                    $args = array_map('esc_html', $args);
+                    $string = vsprintf($string, $args);
+                }
+            }
+            if (empty($string)) {
+                return;
             }
         }
-        if (empty($string)) {
-            return;
-        }
     }
+
 }
 
 class License {
@@ -42,30 +46,29 @@ class License {
         if (is_admin() && (empty($_GET['page']) || $_GET['page'] != $this->get_page_name())) {
             if (!$this->is_valid_license()) {
                 add_action('admin_notices', function () {
-                    $this->_notice($this->get_plugin_title() . __(' is not fully activated!') . ' <a class="button" href="' . $this->get_settings_url() . '">' . __('Activate now') . '</a>', 'error');
+                    $this->_notice($this->get_plugin_title() . ' ' . esc_html__('is not fully activated!') . ' <a class="button" href="' . $this->get_settings_url() . '">' . esc_html__('Activate now') . '</a>', 'error');
                 });
                 $folder = basename(__DIR__);
                 $al_hook = 'plugin_action_links_' . $folder . '/' . $folder . '.php';
                 add_action(is_multisite() ? 'network_admin_' . $al_hook : $al_hook, array($this, 'add_plugin_action_links'));
             }
         }
-        
+
         if (is_admin() && !empty($_GET['page']) && $_GET['page'] == $this->get_page_name()) {
             if (!empty($_GET['action']) && $_GET['action'] == 'update') {
-                    if (!empty($_GET['download_url'])) {
-                        $download_url = sanitize_url($_GET['download_url']);
-                        $updated = $this->download_plugin($download_url, __DIR__.'aaa');
-                        if (is_bool($updated)) {
-                            exit(wp_redirect($this->get_settings_url()));
-                        } else {
-                            die($updated);
-                        }
+                if (!empty($_GET['download_url'])) {
+                    $download_url = sanitize_url($_GET['download_url']);
+                    $updated = $this->download_plugin($download_url, __DIR__ . 'aaa');
+                    if (is_bool($updated)) {
+                        exit(wp_redirect($this->get_settings_url()));
+                    } else {
+                        die($updated);
                     }
                 }
+            }
         }
-        
     }
-    
+
     public function download_plugin($download_url, $plugin_path) {
         ob_start();
         $wp_upgrader_skin = new Envato_Upgrader_Skin();
@@ -91,7 +94,7 @@ class License {
     }
 
     public function _notice($message, $type = 'success') {
-        echo '<div class="notice is-dismissible notice-' . $type . ' notice-alt wp3d-notice"><p><img class="wp3d-logo-admin" src="' . WP3D_MODELIMPORT_PLUGIN_URL . 'assets/img/wp3d.png" width="30" style="width: 30px; vertical-align: top;" /> ' . $message . '</p></div>';
+        echo '<div class="notice is-dismissible notice-' . $type . ' notice-alt"><p><img class="wp3d-logo-admin" src="' . WP3D_EARTH_BLOCKS_PLUGIN_URL . 'assets/img/wp3d.png" width="30" style="width: 30px; vertical-align: top;" /> ' . $message . '</p></div>';
     }
 
     public function get_plugin_folder() {
@@ -121,8 +124,7 @@ class License {
         $url = $this->get_settings_url();
         return array_merge(
                 array(
-                    //'settings' => wp_kses_post( '<a href="' . $url . '">' . esc_html__( 'Settings', 'wp3d' ) . '</a>' ),
-                    'activate' => wp_kses_post('<a href="' . $url . '" style="color: red;"><b>' . esc_html__('Activate', 'wp3d') . '</b></a>'),
+                    'activate' => wp_kses_post('<a href="' . $url . '" style="color: red;"><b>' . esc_html__('Activate', 'wp3d-earth') . '</b></a>'),
                 ),
                 $actions
         );
@@ -132,9 +134,8 @@ class License {
      * Add options page
      */
     public function add_plugin_page() {
-        // This page will be under "Settings"
         add_options_page(
-                $this->get_plugin_title() . ' Settings',
+                $this->get_plugin_title() . esc_html__(' Settings', 'wp3d-earth'),
                 $this->get_plugin_title(),
                 'manage_options',
                 $this->get_page_name(),
@@ -148,70 +149,90 @@ class License {
     public function create_admin_page() {
         $license_key = $this->get_plugin_folder() . '_license_key';
 
-        if (!empty($_POST[$license_key])) {
-            $code = trim($_POST[$license_key]);
-            if (!preg_match("/^([a-f0-9]{8})-(([a-f0-9]{4})-){3}([a-f0-9]{12})$/i", $code)) {
-                $this->_notice(__('Invalid purchase code'), 'error');
-            } else {
-                update_option($license_key, $code);
+        if (!empty($_GET['action']) && $_GET['action'] == 'reset') {
+            delete_option($license_key);
+            delete_option('envato_token');
+            delete_option($this->get_plugin_folder() . '_license_status');
+        }
+        if (!empty($_POST['action']) && $_POST['action'] == 'license') {
+            if (!empty($_POST[$license_key])) {
+                $code = trim($_POST[$license_key]);
+                $code = sanitize_key($code);
+                if (!preg_match("/^([a-f0-9]{8})-(([a-f0-9]{4})-){3}([a-f0-9]{12})$/i", $code)) {
+                    $this->_notice(esc_html__('Invalid purchase code', 'wp3d-earth'), 'error');
+                } else {
+                    update_option($license_key, $code);
+                }
+            }
+            if (!empty($_POST['envato_token'])) {
+                $token = trim($_POST['envato_token']);
+                $token = sanitize_locale_name($token);
+                update_option('envato_token', $token);
             }
         }
-        if (!empty($_POST['envato_token'])) {
-            update_option('envato_token', trim($_POST['envato_token']));
-        }
-        if (!empty($_POST['envato_username'])) {
-            update_option('envato_username', sanitize_title($_POST['envato_username']));
+        if (!empty($_POST['action']) && $_POST['action'] == 'integrations') {
+            if (empty($_POST['google_maps_api'])) {
+                delete_option('google_maps_api');
+            } else {
+                $api = trim($_POST['google_maps_api']);
+                $api = sanitize_locale_name($api);
+                update_option('google_maps_api', $api);
+            }
         }
         ?>
         <div class="wrap">
+
+            <h1><img class="wp3d-logo-admin" src="<?php echo WP3D_EARTH_BLOCKS_PLUGIN_URL . 'assets/img/wp3d.png'; ?>" /> <?php echo $this->get_plugin_title(); ?> <?php esc_html_e('Settings', 'wp3d-earth'); ?></h1>
             <div class="card">
-                <img class="wp3d-logo-admin" src="<?php echo WP3D_MODELIMPORT_PLUGIN_URL . 'assets/img/wp3d.png'; ?>" />
-                <h1><?php echo $this->get_plugin_title(); ?> <?php _e('License', 'wp3d'); ?></h1>
-                <form method="post" action="">
+                <form method="post" action="?page=<?php echo $this->get_page_name(); ?>">
+                    <h2><?php esc_html_e('License', 'wp3d-earth'); ?></h2>
+                    <input type="hidden" name="action" value="license">
                     <p>
-                        <label for="<?php echo $license_key; ?>"><b><?php _e('Purchase Code'); ?>*</b></label>
-                        <input style="width:100%" required type="text" id="<?php echo $license_key; ?>" name="<?php echo $license_key; ?>" value="<?php echo get_option($license_key); ?>" />
-                        <em>You can obtain it from <a href="https://codecanyon.net/downloads" target="_blank">Codecanyon Download page</a>, find the plugin Item "<?php echo $this->get_plugin_title(); ?>" and click on Download > License certificate & purchase code</em>
+                        <label for="<?php echo $license_key; ?>"><b><?php esc_html_e('Purchase Code', 'wp3d-earth'); ?>*</b></label>
+                        <input style="width:100%" required type="text" id="<?php echo $license_key; ?>" name="<?php echo $license_key; ?>" value="<?php echo sanitize_key(get_option($license_key)); ?>" />
+                        <em><?php esc_html_e('You can obtain it from', 'wp3d-earth'); ?> <a href="https://codecanyon.net/downloads" target="_blank"><?php esc_html_e('Codecanyon Download page', 'wp3d-earth'); ?></a>, <?php esc_html_e('find the plugin Item', 'wp3d-earth'); ?> "<?php echo $this->get_plugin_title(); ?>" <?php esc_html_e('and click on Download > License certificate & purchase code', 'wp3d-earth'); ?></em>
                     </p>
                     <p>
-                        <label for="envato_token"><b><?php _e('Envato Token'); ?>*</b></label>
-                        <input style="width:100%" required type="text" id="envato_token" name="envato_token" value="<?php echo get_option('envato_token'); ?>" />
-                        <em><a href="https://build.envato.com/my-apps/#tokens" target="_blank">Obtain your Personal Token now</a>, simply Login with your Envato credentials, click on "Create a new Token", give it a name (not important) and check all Permissions (or at least "List purchases you've made" and optionally "Download your purchased items")</em>
-                    </p>
-                    <!--<p>
-                        <label><b><?php _e('Envato UserName'); ?> (optional)</b></label>
-                        <input style="width:100%" type="text" id="envato_username" name="envato_username" value="<?php echo get_option('envato_username'); ?>" />
-                        <em>Not needed, but if available we can provide you the direct link to download the plugin zip from Envato</em>
-                    </p>-->
-                    <hr>
-                    <h2><?php _e('Integrations', 'wp3d'); ?></h2>
-                    <p>
-                        <label><b><?php _e('Google Maps API Key'); ?> (optional)</b></label>
-                        <input style="width:100%" type="text" id="google_maps_api" name="google_maps_api" value="<?php echo get_option('google_maps_api'); ?>" />
+                        <label for="envato_token"><b><?php esc_html_e('Envato Token', 'wp3d-earth'); ?>*</b></label>
+                        <input style="width:100%" required type="text" id="envato_token" name="envato_token" value="<?php echo sanitize_locale_name(get_option('envato_token')); ?>" />
+                        <em><a href="https://build.envato.com/my-apps/#tokens" target="_blank"><?php esc_html_e('Obtain your Personal Token now', 'wp3d-earth'); ?></a>, <?php esc_html_e('simply Login with your Envato credentials, click on "Create a new Token", give it a name (not important) and check all Permissions (or at least "List purchases you\'ve made" and optionally "Download your purchased items")', 'wp3d-earth'); ?></em>
                     </p>
                     <?php
+                    if (!empty(get_option($license_key))) {
+                        ?>
+                    <a class="button button-danger" style="float: right; margin-top: 15px; background-color: red; color: white;" href="?page=<?php echo $this->get_page_name(); ?>&action=reset"><?php esc_html_e('Remove data and Deactivate', 'wp3d-earth'); ?></a>
+                        <?php
+                    }
                     submit_button();
                     ?>
                 </form>
-            </div>
-
             <?php
-            // https://build.envato.com/create-token/
-            // https://build.envato.com/my-apps/#tokens
             $code = get_option($license_key);
             $personalToken = get_option('envato_token');
-
             if ($code && $personalToken) {
                 $this->get_license_info($personalToken, $code);
             } else {
                 delete_option($this->get_plugin_folder() . '_license_status');
             }
             ?>
+            </div>
+            
+            <div class="card">
+                <form method="post" action="?page=<?php echo $this->get_page_name(); ?>">
+                    <h2><?php esc_html_e('Integrations', 'wp3d-earth'); ?></h2>
+                    <input type="hidden" name="action" value="integrations">
+                    <p>
+                        <label><b><?php esc_html_e('Google Maps API Key'); ?> (optional)</b></label>
+                        <input style="width:100%" type="text" id="google_maps_api" name="google_maps_api" value="<?php echo sanitize_locale_name(get_option('google_maps_api')); ?>" />
+                    </p>
+                    <?php
+                    submit_button();
+                    ?>
+                </form>
+            </div>
         </div>
         <?php
     }
-
-// https://forums.envato.com/t/how-to-verify-a-purchase-code-using-the-envato-api/150813#php-wordpress-17
 
     public function get_envato_download_url($personalToken, $code) {
         $url = "https://api.envato.com/v3/market/buyer/download?shorten_url=true&purchase_code=" . $code;
@@ -223,7 +244,7 @@ class License {
         ));
 
         if (is_wp_error($response)) {
-            $this->_notice(__('Failed to look up Envato API'), 'error');
+            $this->_notice(esc_html__('Failed to look up Envato API', 'wp3d-earth'), 'error');
             return false;
         }
 
@@ -231,10 +252,9 @@ class License {
         $body = @json_decode(wp_remote_retrieve_body($response));
 
         if ($body === false && json_last_error() !== JSON_ERROR_NONE) {
-            $this->_notice(__('Error parsing response, try again'), 'error');
+            $this->_notice(esc_html__('Error parsing response, try again', 'wp3d-earth'), 'error');
             return false;
         }
-        //var_dump($body);
 
         switch ($responseCode) {
             case 404: //throw new Exception("Invalid purchase code");
@@ -242,10 +262,14 @@ class License {
             case 401: //throw new Exception("The personal token is invalid or has been deleted");
             default:
                 //throw new Exception("Got status {$responseCode}, try again shortly");
-                $this->_notice($body->error, 'error');
+                if (!empty($body->error)) {
+                    $this->_notice($body->error, 'error');
+                }
+                if (!empty($body->description)) {
+                    $this->_notice($body->description, 'error');
+                }
                 return false;
             case 200:
-                //var_dump($body);
                 return $body->wordpress_plugin;
         }
 
@@ -263,7 +287,7 @@ class License {
         ));
 
         if (is_wp_error($response)) {
-            $this->_notice(__('Failed to look up Envato API'), 'error');
+            $this->_notice(esc_html__('Failed to look up Envato API', 'wp3d-earth'), 'error');
             return false;
         }
 
@@ -271,7 +295,7 @@ class License {
         $body = @json_decode(wp_remote_retrieve_body($response));
 
         if ($body === false && json_last_error() !== JSON_ERROR_NONE) {
-            $this->_notice(__('Error parsing response, try again'), 'error');
+            $this->_notice(esc_html__('Error parsing response, try again', 'wp3d-earth'), 'error');
             return false;
         }
 
@@ -281,7 +305,12 @@ class License {
             case 401: //throw new Exception("The personal token is invalid or has been deleted");
             default:
                 //throw new Exception("Got status {$responseCode}, try again shortly");
-                $this->_notice($body->description, 'error');
+                if (!empty($body->error)) {
+                    $this->_notice($body->error, 'error');
+                }
+                if (!empty($body->description)) {
+                    $this->_notice($body->description, 'error');
+                }
                 return [];
             case 200:
                 return $body;
@@ -295,7 +324,6 @@ class License {
         try {
             // Pass in the purchase code from the user
             $sales = $this->get_envato_list_purchases($personalToken);
-            //var_dump($sales);
             if ($sales) {
 
                 foreach ($sales->results as $sale) {
@@ -303,18 +331,15 @@ class License {
                         ?>
                         <div class="notice inline notice-success" style="padding: 20px;margin: 20px 0;max-width: 476px;">
                             <?php
-                            // Example: Check if the purchase is still supported
                             $supportDate = strtotime($sale->supported_until);
-                            //$supported = $supportDate > time() ? "Yes" : "No";
-                            echo "<b>Item ID:</b> {$sale->item->id} <br>";
-                            echo "<b>Item name:</b> {$sale->item->name} <br>";
-                            echo "<b>License:</b> {$sale->license} <br>";
-                            echo "<b>Supported until:</b> {$sale->supported_until} <br>";
-                            //echo "<b>Currently supported?:</b> {$supported} <br>";
+                            echo "<b>".esc_html__('Item ID', 'wp3d-earth').":</b> {$sale->item->id} <br>";
+                            echo "<b>".esc_html__('Item name', 'wp3d-earth').":</b> {$sale->item->name} <br>";
+                            echo "<b>".esc_html__('License', 'wp3d-earth').":</b> {$sale->license} <br>";
+                            echo "<b>".esc_html__('Supported until', 'wp3d-earth').":</b> {$sale->supported_until} <br>";
 
                             $plugin_data = get_plugin_data(__DIR__ . DIRECTORY_SEPARATOR . $this->get_plugin_folder() . '.php');
                             $plugin_version = $plugin_data['Version'];
-                            echo "<b>Latest version:</b> {$sale->item->wordpress_plugin_metadata->version} (" . $plugin_version . " installed)<br>";
+                            echo "<b>".esc_html__('Latest version', 'wp3d-earth').":</b> ".$sale->item->wordpress_plugin_metadata->version." (" . $plugin_version . " ".esc_html__('installed', 'wp3d-earth').")<br>";
 
                             $username = get_option('envato_username');
 
@@ -325,11 +350,10 @@ class License {
                                 $update = false;
                             }
                             if ($download_url) {
-                                echo '<a class="button button-primary" href="' . $download_url . '"><span style="vertical-align: middle;" class="dashicons dashicons-download"></span> Download latest</a>';
+                                echo '<a class="button button-primary" href="' . $download_url . '"><span style="vertical-align: middle;" class="dashicons dashicons-download"></span> '.esc_html__('Download latest', 'wp3d-earth').'</a>';
                                 if (version_compare($sale->item->wordpress_plugin_metadata->version, $plugin_version, '>')) {
                                     if ($update) {
-                                        echo ' <a class="button button-danger button-warning" href="' . $this->get_settings_url().'&action=update&download_url='.$download_url . '"><span style="vertical-align: middle;" class="dashicons dashicons-update"></span> Update now to latest version!</a>';
-
+                                        echo ' <a class="button button-danger button-warning" href="' . $this->get_settings_url() . '&action=update&download_url=' . $download_url . '"><span style="vertical-align: middle;" class="dashicons dashicons-update"></span> '.esc_html__('Update now to latest version!', 'wp3d-earth').'</a>';
                                     }
                                 }
                             }
@@ -375,11 +399,8 @@ class License {
         if ('production' !== $environment) {
             return apply_filters('is_local_url', true, $url, $environment);
         }
-
-        // Trim it up
         $url = strtolower(trim($url));
 
-        // Need to get the host...so let's add the scheme so we can use parse_url
         if (false === strpos($url, 'http://') && false === strpos($url, 'https://')) {
             $url = 'http://' . $url;
         }
@@ -428,7 +449,6 @@ class License {
                 }
             }
         }
-        //var_dump($is_local_url); die();
         return apply_filters('is_local_url', $is_local_url, $url, $environment);
     }
 }

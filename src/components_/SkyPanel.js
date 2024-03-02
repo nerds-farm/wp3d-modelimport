@@ -59,20 +59,20 @@ export default function SkyPanel( prop ) {
 		
 	}
 	let typeOptions = [
-		{ label: __("Color", "wp3d-earth"), value: 'backgroundcolor' },
-		{ label: __("Transparent", "wp3d-earth"), value: 'transparent' },
+		{ label: 'Color', value: 'backgroundcolor' },
+		{ label: 'Transparent', value: 'transparent' },
 	];
 	if(sky_image.url){
-		typeOptions.push({ label: __("Image", "wp3d-earth"), value: 'image' })
+		typeOptions.push({ label: 'Image', value: 'image' })
 	}
 	if(isEarth){
-		typeOptions.push({ label: __("Stars", "wp3d-earth"), value: 'stars' })
+		typeOptions.push({ label: 'Stars', value: 'stars' })
 	}
 
 	return (
 	<>
 		<PanelBody 
-		title={ __( 'Sky', 'wp3d-earth' )}
+		title={ __( 'Sky', 'wp3d-blocks' )}
 		initialOpen={false}
 		>
 			<SelectControl
@@ -81,7 +81,11 @@ export default function SkyPanel( prop ) {
 				options={ typeOptions }
 				onChange={ ( val ) => onChangeValue("sky_type",{ sky_type: val }) }
 			/>
+
+
 			<div>
+
+				
 				{sky_type == 'backgroundcolor' &&
 					<ColorPicker
 					color={sky_color}
@@ -89,20 +93,23 @@ export default function SkyPanel( prop ) {
 					//enableAlpha
 					defaultValue="#FFF"
 				/>}
+
+
 				<ChooseImage 
-					label={ __( "Texture Image", "wp3d-earth" )}
+					label="Texture Image" 
 					value={sky_image}
 					onAdd={onSelectMediaSky} 
 					onRemove={removeMediaSky}
 				/>
+				
 				{(sky_image.url) && <ToggleControl
-					label={ __( 'Environment', 'wp3d-earth' )}
+					label={ __( 'Environment', 'wp3d-blocks' )}
 					checked={ sky_environmentimage }
 					onChange={ ( val ) => onChangeValue("sky_environmentimage",{ sky_environmentimage: val }) }
 				/>}
 				{(sky_image.url && sky_environmentimage && isEarth) && 
 					<RangeControl
-						label={ __( 'Metalness', 'wp3d-earth' )}
+						label={ __( 'Metalness', 'wp3d-blocks' )}
 						value={ material_metalness }
 						onChange={ ( val ) => onChangeValue("material_metalness",{ material_metalness: val }) }
 						min={ 0 }
@@ -114,7 +121,7 @@ export default function SkyPanel( prop ) {
 				}
 				{/* {(sky_image.url && sky_environmentimage && isEarth) && 
 					<RangeControl
-						label={ __( 'Roughness', 'wp3d-earth' )}
+						label={ __( 'Roughness', 'wp3d-blocks' )}
 						value={ material_roughness }
 						onChange={ ( val ) => onChangeValue("material_roughness",{ material_roughness: val }) }
 						min={ 0 }
@@ -126,6 +133,7 @@ export default function SkyPanel( prop ) {
 				} */}
 
 			</div>
+
 		</PanelBody>
 	</>
 	)

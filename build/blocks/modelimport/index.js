@@ -181,12 +181,15 @@ function Edit(props) {
     let $useElementChange = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
     setAttributes(val);
     attributes[prop] = val[prop];
-    if ($useElementChange) importModel3D_element.elementChange(ide, prop, attributes);
+    if ($useElementChange && importModel3D_element) importModel3D_element.elementChange(ide, prop, attributes);
   }
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    setAttributes({
-      ide: `wp3d-importmodel3d-${instanceId}`
-    });
+    if (ide != `wp3d-importmodel3d-${instanceId}`)
+      //DEBUGG
+      setAttributes({
+        ide: `wp3d-importmodel3d-${instanceId}`
+      });
+    setImportmodel3D_element(new _classes_class_e_threed_modelimport_js__WEBPACK_IMPORTED_MODULE_12__["default"](scopeRef.current, attributes, true, cbfn));
     //console.log('the model')
   }, []);
 
@@ -242,12 +245,15 @@ function Edit(props) {
       //console.log(posObj)
       applyTransform(false, posObj);
     });
+    $this.on('tofloor', $al => {
+      const posObj = $this.getObjPos();
+      //console.log(posObj)
+      applyTransform(true, posObj);
+    });
     jQuery(scopeRef.current).data('sceneInstance', $this);
   }
   ;
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    setImportmodel3D_element(new _classes_class_e_threed_modelimport_js__WEBPACK_IMPORTED_MODULE_12__["default"](attributes, true, cbfn));
-  }, [ide]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {}, [ide]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (importModel3D_element) {
       importModel3D_element.onWindowResize();
@@ -384,6 +390,11 @@ function Edit(props) {
     }
     return mmtyp;
   }
+  function toFloor() {
+    if (importModel3D_element) importModel3D_element.toFloor();
+    //applyPosCamera(true,{ fov:40, zoom:1, camx:0, camy:0, camz:4 });
+  }
+
   function clickResetPos() {
     applyPosCamera(true, {
       fov: 40,
@@ -494,7 +505,7 @@ function Edit(props) {
       src: _assets_img_modelimport_cover_jpg__WEBPACK_IMPORTED_MODULE_14__
     }));
   }
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", blockProps, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ref: scopeRef,
     id: `wp3d-importmodel3d-${instanceId}`,
     className: `wp3d-instance-element align${align}`
@@ -515,13 +526,7 @@ function Edit(props) {
     className: "wp3d-tools-object3d-rot"
   }, "\xA0"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "wp3d-tools-object3d-scale"
-  }, "\xA0")))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", blockProps, (import_mode == "media_file" || import_mode == "external_url") && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "wp3d-trace"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "wp3d-trace-name"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "dashicon dashicons dashicons-modelimport-wp3d"
-  }), " Model Import ")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, " ", import_mode, " "), "\xA0"), import_mode == "media_file" ? import_file && '' : import_folder_path && ''), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "\xA0")))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "wp3d-blocks-list"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_5__.InnerBlocks, {
     className: "wp3d-innerblock",
@@ -559,10 +564,10 @@ function Edit(props) {
     isBlock: true
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalToggleGroupControlOption, {
     value: "media_file",
-    label: "Media File"
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Media File', 'wp3d-blocks')
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalToggleGroupControlOption, {
     value: "external_url",
-    label: "External URL"
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('External URL', 'wp3d-blocks')
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "components-panel-col"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
@@ -605,7 +610,7 @@ function Edit(props) {
     }
   })), import_mode == "media_file" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_ChooseModel3d_js__WEBPACK_IMPORTED_MODULE_8__["default"], {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Upload Model File', 'wp3d-blocks'),
-    chooselabel: "Choose an 3D",
+    chooselabel: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Choose an 3D', 'wp3d-blocks'),
     value: import_file
     //mimetype={allowedMimetype}
     ,
@@ -629,26 +634,8 @@ function Edit(props) {
     className: "panelbody-heading"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Icon, {
     icon: "admin-settings"
-  }), " ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Options', 'wp3d-blocks')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('AutoScale', 'wp3d-blocks')
-    // help={
-    // 	import_scalemodel
-    // 		? 'Show'
-    // 		: 'Hide'
-    // }
-    ,
-    checked: import_scalemodel,
-    onChange: val => onChangeValue("import_scalemodel", {
-      import_scalemodel: val
-    })
-  }), animations > 0 && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: "Animation Mixer"
-    // help={
-    // 	import_animationMixer
-    // 		? 'Show'
-    // 		: 'Hide'
-    // }
-    ,
+  }), " ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Options', 'wp3d-blocks')), animations > 0 && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Animation Mixer', 'wp3d-blocks'),
     checked: import_animationMixer,
     onChange: val => onChangeValue("import_animationMixer", {
       import_animationMixer: val
@@ -662,7 +649,16 @@ function Edit(props) {
     min: 0,
     max: animations - 2,
     value: index_animationMixer
-  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('AutoScale', 'wp3d-blocks'),
+    checked: import_scalemodel,
+    onChange: val => onChangeValue("import_scalemodel", {
+      import_scalemodel: val
+    })
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
+    variant: "primary",
+    onClick: toFloor
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('To Floor', 'wp3d-blocks'))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Render', 'wp3d-blocks'),
     initialOpen: false
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
@@ -1049,7 +1045,7 @@ function Edit(props) {
     allowReset: true,
     resetFallbackValue: 0
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
-    label: "Scale",
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Scale', 'wp3d-blocks'),
     value: geometry_mesh_scale,
     onChange: val => onChangeValue("geometry_mesh_scale", {
       geometry_mesh_scale: val
@@ -1062,7 +1058,7 @@ function Edit(props) {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
     variant: "primary",
     onClick: clickResetTransform
-  }, "Reset Rotation"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_ViewportPanel_js__WEBPACK_IMPORTED_MODULE_10__["default"], {
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Reset Rotation', 'wp3d-blocks')))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_ViewportPanel_js__WEBPACK_IMPORTED_MODULE_10__["default"], {
     props: props,
     onChange: onChangeValue
   })));
@@ -1889,17 +1885,20 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class e_threed_class_modelimport {
-  constructor($props) {
-    let $isEditor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-    let $cbfn = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  constructor($target, $props) {
+    let $isEditor = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+    let $cbfn = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
     //alert('model')
     // GUTEMBERG...
     ////////////////////////////////////////////////
     //scope è il contenitore delle cose
     this.id_scope = $props.ide;
-    //this.scope = document.getElementById($props.ide);
-    this.scope = jQuery('#' + $props.ide);
-    this.targetScope = document.getElementById($props.ide);
+    this.targetScope = $target; //document.getElementById($props.ide);
+    if ($isEditor) {
+      this.scope = jQuery(this.targetScope);
+    } else {
+      this.scope = jQuery('#' + $props.ide);
+    }
     //console.log('ide ', $props.ide, this.targetScope);
     if (!this.targetScope) return;
 
@@ -2261,9 +2260,9 @@ class e_threed_class_modelimport {
     this.scene.add(this.themodel);
 
     //applico le TRASFORMAZIONI iniziali al "themodel" 
-    if (this.enableTransform) {
-      this.applyTransform();
-    }
+    //if(this.enableTransform){
+    this.applyTransform();
+    //}
     if (this.isEditor) {
       this.createTransformControl();
       this.activeTools();
@@ -3251,6 +3250,22 @@ class e_threed_class_modelimport {
     bbox.getCenter(cent);
     obj.position.copy(cent).multiplyScalar(dim / 2 * -1);
   }
+  toFloor() {
+    const $target = this.themodel;
+    var obox = new three__WEBPACK_IMPORTED_MODULE_0__.Box3().setFromObject($target);
+    //
+    var size = obox.getSize(new three__WEBPACK_IMPORTED_MODULE_0__.Vector3());
+
+    //Rescale the object to normalized space
+    //var maxAxis = Math.max(size.x, size.y, size.z);
+    const bounding_y = size.y;
+    const floorPos = (this.ambientPosY + this.default_ambientPosY) * -1;
+    let posfloor = (floorPos - bounding_y / 2) * -1;
+    //alert(floorPos+' - '+bounding_y+' - '+posfloor);
+    $target.position.y = posfloor;
+    this.triggerHandler('tofloor', [$target.position.x, $target.position.y, $target.position.z, $target.rotation.x, $target.rotation.y, $target.rotation.z, $target.scale.x, $target.scale.y, $target.scale.z]);
+    this.triggerHandler('TCchange', [$target.position.x, $target.position.y, $target.position.z, three__WEBPACK_IMPORTED_MODULE_0__.MathUtils.radToDeg($target.rotation.x), three__WEBPACK_IMPORTED_MODULE_0__.MathUtils.radToDeg($target.rotation.y), three__WEBPACK_IMPORTED_MODULE_0__.MathUtils.radToDeg($target.rotation.z), $target.scale.x, $target.scale.y, $target.scale.z]);
+  }
   percentage(partialValue, totalValue) {
     return 1 * partialValue / totalValue;
   }
@@ -3531,12 +3546,6 @@ class e_threed_class_modelimport {
       this.ambientSkyPath = this.elementSettings.sky_image ? this.elementSettings.sky_image.url : '';
       this.clean3DskyImage();
       this.generateSkyImage();
-      if (this.ambientSkyPath) {
-        this.scene.background = this.sky_texture;
-      } else {
-        this.scene.background = new three__WEBPACK_IMPORTED_MODULE_0__.Color(this.ambientSkyColor);
-      }
-      this.render();
     }
     if ('sky_environmentimage' === propertyName) {
       //EEE
@@ -4099,26 +4108,26 @@ function SkyPanel(prop) {
     });
   };
   let typeOptions = [{
-    label: 'Color',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Color", "wp3d-earth"),
     value: 'backgroundcolor'
   }, {
-    label: 'Transparent',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Transparent", "wp3d-earth"),
     value: 'transparent'
   }];
   if (sky_image.url) {
     typeOptions.push({
-      label: 'Image',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Image", "wp3d-earth"),
       value: 'image'
     });
   }
   if (isEarth) {
     typeOptions.push({
-      label: 'Stars',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Stars", "wp3d-earth"),
       value: 'stars'
     });
   }
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sky', 'wp3d-blocks'),
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sky', 'wp3d-earth'),
     initialOpen: false
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
     label: "Type",
@@ -4136,18 +4145,18 @@ function SkyPanel(prop) {
     ,
     defaultValue: "#FFF"
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ChooseImage_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    label: "Texture Image",
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Texture Image", "wp3d-earth"),
     value: sky_image,
     onAdd: onSelectMediaSky,
     onRemove: removeMediaSky
   }), sky_image.url && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Environment', 'wp3d-blocks'),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Environment', 'wp3d-earth'),
     checked: sky_environmentimage,
     onChange: val => onChangeValue("sky_environmentimage", {
       sky_environmentimage: val
     })
   }), sky_image.url && sky_environmentimage && isEarth && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Metalness', 'wp3d-blocks'),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Metalness', 'wp3d-earth'),
     value: material_metalness,
     onChange: val => onChangeValue("material_metalness", {
       material_metalness: val
@@ -4213,13 +4222,13 @@ function ViewportPanel(prop) {
     default: 100
   }];
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Viewport', 'wp3d-blocks'),
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Viewport", "wp3d-earth"),
     initialOpen: false
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Ratio", "wp3d-blocks"),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Ratio", "wp3d-earth"),
     value: viewport_ratio,
     options: [{
-      label: 'Custom',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Custom", "wp3d-earth"),
       value: 'custom'
     }, {
       label: '1/1',
@@ -4235,7 +4244,7 @@ function ViewportPanel(prop) {
       viewport_ratio: val
     })
   }), viewport_ratio == "custom" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalUnitControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Height", "wp3d-blocks"),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Height", "wp3d-earth"),
     isUnitSelectTabbable: true,
     onChange: val => onChangeValue("viewport_height", {
       viewport_height: val
@@ -4244,12 +4253,12 @@ function ViewportPanel(prop) {
     units: units,
     value: viewport_height
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-    label: "Fixed",
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Fixed", "wp3d-earth"),
     checked: viewport_fixed,
     onChange: val => onChangeValue("viewport_fixed", {
       viewport_fixed: val
     })
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Questa opzione forza questo blocco a restare fisso a tutto schermo sotto a tutto.", "wp3d-blocks"))));
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("This option forces this block to remain fixed in fullscreen below everything.", "wp3d-earth"))));
 }
 
 /***/ }),
@@ -82820,7 +82829,7 @@ function toCreasedNormals( geometry, creaseAngle = Math.PI / 3 /* 60 degrees */ 
 /***/ (function(module) {
 
 "use strict";
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"wp3d/modelimport","version":"0.1.0","title":"Model Import","category":"wp3d-blocks","icon":"modelimport-wp3d","description":"Import and view your 3D models on the site and make them interactive.","attributes":{"ide":{"type":"string","default":"wp3d-modelimport3d-0"},"preview":{"type":"boolean","default":false},"countLight":{"type":"number","default":0},"sky_type":{"type":"string","default":"backgroundcolor"},"sky_color":{"type":"string","default":"#FFFFFF"},"sky_environmentimage":{"type":"boolean","default":false},"material_metalness":{"type":"number","default":1},"material_roughness":{"type":"number","default":0},"sky_image":{"type":"object","default":{"id":0,"url":"","alt":"","title":""}},"import_mode":{"type":"string","default":"media_file"},"import_folder_path":{"type":"string","default":""},"import_file_name":{"type":"string","default":"scene"},"import_format_type":{"type":"string","default":"glb"},"import_file":{"type":"object","default":{"id":0,"url":"","alt":"","title":""}},"import_scalemodel":{"type":"boolean","default":true},"import_animationMixer":{"type":"boolean","default":true},"index_animationMixer":{"type":"number","default":0},"useDamping":{"type":"boolean","default":false},"dampingFactor":{"type":"number","default":0.05},"useZoom":{"type":"boolean","default":false},"autorotate":{"type":"boolean","default":false},"autorotateSpeed":{"type":"number","default":1},"objshadows_receiveShadow":{"type":"boolean","default":false},"objshadows_castShadow":{"type":"boolean","default":false},"enableContactshadow":{"type":"boolean","default":false},"cs_color":{"type":"string","default":"#000000"},"cs_blurx":{"type":"number","default":0.5},"cs_blury":{"type":"number","default":0.5},"cs_darkness":{"type":"number","default":1},"cs_sensibility":{"type":"number","default":0.5},"cs_opacity":{"type":"number","default":1},"camera_fov":{"type":"number","default":40},"camera_zoom":{"type":"number","default":1},"enableTransform":{"type":"boolean","default":false},"geometry_mesh_posx":{"type":"number","default":0},"geometry_mesh_posy":{"type":"number","default":0},"geometry_mesh_posz":{"type":"number","default":0},"geometry_mesh_rotx":{"type":"number","default":0},"geometry_mesh_roty":{"type":"number","default":0},"geometry_mesh_rotz":{"type":"number","default":0},"geometry_mesh_scale":{"type":"number","default":1},"camera_posx":{"type":"number","default":0},"camera_posy":{"type":"number","default":0},"camera_posz":{"type":"number","default":4},"camera_targetx":{"type":"number","default":0},"camera_targety":{"type":"number","default":0},"camera_targetz":{"type":"number","default":0},"light_intensity":{"type":"number","default":1},"spot_intensity":{"type":"number","default":1},"renderer_physicallyCorrectLights":{"type":"boolean","default":false},"renderer_outputEncoding":{"type":"string","default":"sRGBEncoding"},"renderer_toneMapping":{"type":"string","default":"NoToneMapping"},"renderer_toneMapping_exposure":{"type":"number","default":0.68},"viewport_ratio":{"type":"string","default":"custom"},"viewport_height":{"type":"string","default":"500px"},"viewport_fixed":{"type":"boolean","default":false}},"supports":{"html":false,"align":["center","wide","full"]},"example":{"attributes":{"preview":true}},"textdomain":"wp3d-blocks","editorScript":["file:./index.js","jquery","nprogress"],"editorStyle":"file:./index.css","style":["file:./style-index.css","nprogress"],"viewScript":["file:./script.js","jquery","nprogress"]}');
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"wp3d/modelimport","version":"0.1.0","title":"Model Import","category":"wp3d-blocks","icon":"modelimport-wp3d","description":"Import and view your 3D models on the site and make them interactive.","attributes":{"ide":{"type":"string","default":"wp3d-modelimport3d-0"},"preview":{"type":"boolean","default":false},"countLight":{"type":"number","default":0},"sky_type":{"type":"string","default":"backgroundcolor"},"sky_color":{"type":"string","default":"#FFFFFF"},"sky_environmentimage":{"type":"boolean","default":false},"material_metalness":{"type":"number","default":1},"material_roughness":{"type":"number","default":0},"sky_image":{"type":"object","default":{"id":0,"url":"","alt":"","title":""}},"import_mode":{"type":"string","default":"media_file"},"import_folder_path":{"type":"string","default":""},"import_file_name":{"type":"string","default":"scene"},"import_format_type":{"type":"string","default":"glb"},"import_file":{"type":"object","default":{"id":0,"url":"","alt":"","title":""}},"import_scalemodel":{"type":"boolean","default":true},"import_animationMixer":{"type":"boolean","default":false},"index_animationMixer":{"type":"number","default":0},"useDamping":{"type":"boolean","default":false},"dampingFactor":{"type":"number","default":0.05},"useZoom":{"type":"boolean","default":false},"autorotate":{"type":"boolean","default":false},"autorotateSpeed":{"type":"number","default":1},"objshadows_receiveShadow":{"type":"boolean","default":false},"objshadows_castShadow":{"type":"boolean","default":false},"enableContactshadow":{"type":"boolean","default":false},"cs_color":{"type":"string","default":"#000000"},"cs_blurx":{"type":"number","default":0.5},"cs_blury":{"type":"number","default":0.5},"cs_darkness":{"type":"number","default":1},"cs_sensibility":{"type":"number","default":0.5},"cs_opacity":{"type":"number","default":1},"camera_fov":{"type":"number","default":40},"camera_zoom":{"type":"number","default":1},"enableTransform":{"type":"boolean","default":false},"geometry_mesh_posx":{"type":"number","default":0},"geometry_mesh_posy":{"type":"number","default":0},"geometry_mesh_posz":{"type":"number","default":0},"geometry_mesh_rotx":{"type":"number","default":0},"geometry_mesh_roty":{"type":"number","default":0},"geometry_mesh_rotz":{"type":"number","default":0},"geometry_mesh_scale":{"type":"number","default":1},"camera_posx":{"type":"number","default":0},"camera_posy":{"type":"number","default":0},"camera_posz":{"type":"number","default":4},"camera_targetx":{"type":"number","default":0},"camera_targety":{"type":"number","default":0},"camera_targetz":{"type":"number","default":0},"light_intensity":{"type":"number","default":1},"spot_intensity":{"type":"number","default":1},"enable_leftlight":{"type":"boolean","default":false},"leftspot_intensity":{"type":"number","default":1},"enable_rightlight":{"type":"boolean","default":false},"rightspot_intensity":{"type":"number","default":1},"renderer_physicallyCorrectLights":{"type":"boolean","default":false},"renderer_outputEncoding":{"type":"string","default":"sRGBEncoding"},"renderer_toneMapping":{"type":"string","default":"NoToneMapping"},"renderer_toneMapping_exposure":{"type":"number","default":0.68},"viewport_ratio":{"type":"string","default":"custom"},"viewport_height":{"type":"string","default":"500px"},"viewport_fixed":{"type":"boolean","default":false}},"supports":{"html":false,"align":["center","wide","full"]},"example":{"attributes":{"preview":true}},"textdomain":"wp3d-blocks","editorScript":["file:./index.js","jquery","nprogress"],"editorStyle":"file:./index.css","style":["file:./style-index.css","nprogress"],"viewScript":["file:./script.js","jquery","nprogress"]}');
 
 /***/ })
 

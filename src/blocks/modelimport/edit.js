@@ -50,7 +50,7 @@ import ViewportPanel from '../../components/ViewportPanel.js';
 import SkyPanel from '../../components/SkyPanel.js';
 
 // Classes
-import e_threed_class_importmodel from '../../classes/class.e_threed_modelimport.js';
+import e_threed_class_modelimport from '../../classes/class.e_threed_modelimport.js';
 import E_threed_class_light from '../../classes/class.e_threed_light.js';
 
 //SHADERS for contactshadow
@@ -163,15 +163,17 @@ export default function Edit( props ) {
 		//alert('pippo');
 	}
 	function onChangeValue(prop, val, $useElementChange = true){
-		
 		setAttributes( val );
 
 		attributes[prop] = val[prop];
-		if($useElementChange) importModel3D_element.elementChange(ide, prop, attributes);
+		if($useElementChange && importModel3D_element) importModel3D_element.elementChange(ide, prop, attributes);
 	}
 	
 	useEffect(() => {
+		if( ide != `wp3d-importmodel3d-${ instanceId }` ) //DEBUGG
 		setAttributes( { ide: `wp3d-importmodel3d-${ instanceId }` } );
+
+		setImportmodel3D_element(new e_threed_class_modelimport( scopeRef.current, attributes, true, cbfn ));
 		//console.log('the model')
 	},[]);
 
@@ -233,7 +235,11 @@ export default function Edit( props ) {
 			//console.log(posObj)
 			applyTransform(false, posObj);
 		});
-		
+		$this.on('tofloor',($al)=>{
+			const posObj = $this.getObjPos()
+			//console.log(posObj)
+			applyTransform(true, posObj);
+		});
 		
 		
 		jQuery(scopeRef.current).data('sceneInstance',$this);
@@ -242,7 +248,7 @@ export default function Edit( props ) {
 	};
 
 	useEffect(() => {
-		setImportmodel3D_element(new e_threed_class_importmodel( attributes, true, cbfn ));
+		
 		
 	},[ide]);
 
@@ -406,7 +412,10 @@ export default function Edit( props ) {
 
 		return mmtyp;
 	}
-
+	function toFloor(){
+		if(importModel3D_element) importModel3D_element.toFloor();
+		//applyPosCamera(true,{ fov:40, zoom:1, camx:0, camy:0, camz:4 });
+    }
 	function clickResetPos(){
 		applyPosCamera(true,{ fov:40, zoom:1, camx:0, camy:0, camz:4 });
     }
@@ -462,6 +471,8 @@ export default function Edit( props ) {
 	
 	return (
 		<>
+		<div { ...blockProps }>
+		
 		<div ref={ scopeRef } id={ `wp3d-importmodel3d-${ instanceId }` } className={`wp3d-instance-element align${align}`}>
 			<div className="wp3d-container wp3d-importmodel-container" style={h} >
 				<canvas ref={ canvasRef } id={ `wp3d-canvas-${ instanceId }` } className="wp3d-canvas threed-canvas"></canvas>
@@ -474,9 +485,9 @@ export default function Edit( props ) {
 			</div>
 		</div>
 		
-		<div { ...blockProps }>
+		
 
-			{ (import_mode == "media_file" || import_mode == "external_url") && ( 
+			{/* { (import_mode == "media_file" || import_mode == "external_url") && ( 
 			<div className="wp3d-trace">
 				<span>
 					<span className="wp3d-trace-name">
@@ -485,21 +496,15 @@ export default function Edit( props ) {
 					<span><b> {import_mode} </b>&nbsp;
 				</span>
 
-				{/* { import_mode == "media_file" ? (
-					import_file ? (<span>{import_file}</span>) : ''
-				) : (
-					import_folder_path ? (<span>{ import_folder_path }/{ import_file_name }.{ import_format_type }</span>) : ''
-				)} */}
 				{ import_mode == "media_file" ? (
-					import_file && ''
+					import_file.url && (<span>{import_file.url}</span>)
 				) : (
-					import_folder_path && ''
+					import_folder_path && (<span>{ import_folder_path }/{ import_file_name }.{ import_format_type }</span>)
 				)}
-				{/* <span><b>X:</b> {geometry_mesh_posx}</span> 
-				<span><b>Y:</b> {geometry_mesh_posy}</span> 
-				<span><b>Z:</b> {geometry_mesh_posz}</span> */}
+				
+
 			</div>
-			)}
+			)} */}
 			<div className="wp3d-blocks-list">
 				<InnerBlocks
 					className="wp3d-innerblock"
@@ -532,8 +537,8 @@ export default function Edit( props ) {
 						}
 					} 
 					isBlock>
-					<ToggleGroupControlOption value="media_file" label="Media File" />
-					<ToggleGroupControlOption value="external_url" label="External URL" />
+					<ToggleGroupControlOption value="media_file" label={ __( 'Media File', 'wp3d-blocks' )} />
+					<ToggleGroupControlOption value="external_url" label={ __( 'External URL', 'wp3d-blocks' )} />
         		</ToggleGroupControl>
 
 				
@@ -568,7 +573,7 @@ export default function Edit( props ) {
 					<div>
 						<ChooseModel3d 
 							label={ __( 'Upload Model File', 'wp3d-blocks' )}
-							chooselabel="Choose an 3D" 
+							chooselabel={ __( 'Choose an 3D', 'wp3d-blocks' )}
 							value={import_file}
 							//mimetype={allowedMimetype}
 							onAdd={onSelectMediaModel} 
@@ -597,24 +602,9 @@ export default function Edit( props ) {
 				
 				
 				<h3 className="panelbody-heading"><Icon icon="admin-settings" /> {__('Options', 'wp3d-blocks')}</h3>
-				<ToggleControl
-					label={ __( 'AutoScale', 'wp3d-blocks' )}
-					// help={
-					// 	import_scalemodel
-					// 		? 'Show'
-					// 		: 'Hide'
-					// }
-					checked={ import_scalemodel }
-					onChange={ ( val ) => onChangeValue("import_scalemodel",{ import_scalemodel: val }) }
-				/>
 				{animations > 0 && <div>
 					<ToggleControl
-						label="Animation Mixer"
-						// help={
-						// 	import_animationMixer
-						// 		? 'Show'
-						// 		: 'Hide'
-						// }
+						label={__('Animation Mixer', 'wp3d-blocks')}
 						checked={ import_animationMixer }
 						onChange={ ( val ) => onChangeValue("import_animationMixer",{ import_animationMixer: val }) }
 					/>
@@ -630,7 +620,15 @@ export default function Edit( props ) {
 						/>
 					}
 					</div>
-				}				
+				}
+				<ToggleControl
+					label={ __( 'AutoScale', 'wp3d-blocks' )}
+					checked={ import_scalemodel }
+					onChange={ ( val ) => onChangeValue("import_scalemodel",{ import_scalemodel: val }) }
+				/>
+				<Button variant="primary" onClick={ toFloor }>{__('To Floor', 'wp3d-blocks')}</Button>
+
+							
 			</PanelBody>
 			<PanelBody 
 				title={ __( 'Render', 'wp3d-blocks' )}
@@ -940,7 +938,7 @@ export default function Edit( props ) {
 			initialOpen={false}
 			>
 				<ToggleControl
-					label={ __( 'Enable Transform', 'wp3d-blocks' )}
+					label={ __( 'Enable Transform', 'wp3d-blocks' ) }
 					checked={ enableTransform }
 					onChange={ ( val ) => onChangeValue("enableTransform",{ enableTransform: val }) }
 				/>
@@ -1012,7 +1010,7 @@ export default function Edit( props ) {
 				/>
 				
 				<RangeControl
-					label="Scale"
+					label={__( 'Scale', 'wp3d-blocks' )}
 					value={ geometry_mesh_scale }
 					onChange={ ( val ) => onChangeValue("geometry_mesh_scale",{ geometry_mesh_scale: val }) }
 					min={ 0.01 }
@@ -1022,7 +1020,7 @@ export default function Edit( props ) {
 					resetFallbackValue={1}
 				/>
 
-				<Button variant="primary" onClick={ clickResetTransform }>Reset Rotation</Button>
+				<Button variant="primary" onClick={ clickResetTransform }>{__( 'Reset Rotation', 'wp3d-blocks' )}</Button>
 					
 				</div>}
 				

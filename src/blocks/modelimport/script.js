@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
        // const settings_string = ;
         const settings_obj = JSON.parse(el.getAttribute('data-settings'));
         const ide = settings_obj.ide;
-       
-        const modelimport3D_element = new e_threed_class_modelimport(settings_obj,false,cbfn);
+        const targetScope = document.getElementById(ide);
+        const modelimport3D_element = new e_threed_class_modelimport(targetScope, settings_obj,false,cbfn);
 
         //
     })

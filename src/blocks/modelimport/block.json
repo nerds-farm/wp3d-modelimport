@@ -71,7 +71,7 @@
 		},
 		"import_animationMixer": {
 			"type": "boolean",
-			"default": true
+			"default": false
 		},
 		"index_animationMixer": {
 			"type": "number",
@@ -205,6 +205,23 @@
 			"type": "number",
 			"default": 1
 		},
+		"enable_leftlight": {
+			"type": "boolean",
+			"default": false
+		},
+		"leftspot_intensity": {
+			"type": "number",
+			"default": 1
+		},
+		"enable_rightlight": {
+			"type": "boolean",
+			"default": false
+		},
+		"rightspot_intensity": {
+			"type": "number",
+			"default": 1
+		},
+
 		"renderer_physicallyCorrectLights": {
 			"type": "boolean",
 			"default": false

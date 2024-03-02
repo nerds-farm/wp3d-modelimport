@@ -67,16 +67,19 @@ import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurS
 import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader.js';
 
 class e_threed_class_modelimport {
-    constructor($props, $isEditor = true, $cbfn = null) {
+    constructor($target, $props, $isEditor = true, $cbfn = null) {
         //alert('model')
         // GUTEMBERG...
         ////////////////////////////////////////////////
         //scope è il contenitore delle cose
         this.id_scope = $props.ide;
-        //this.scope = document.getElementById($props.ide);
-        this.scope = jQuery('#'+$props.ide);
         
-        this.targetScope = document.getElementById($props.ide);
+        this.targetScope = $target; //document.getElementById($props.ide);
+        if($isEditor){
+            this.scope = jQuery(this.targetScope);
+        }else{
+            this.scope = jQuery('#'+$props.ide);
+        }
         //console.log('ide ', $props.ide, this.targetScope);
         if(!this.targetScope) return;
 
@@ -488,9 +491,9 @@ class e_threed_class_modelimport {
 
 
         //applico le TRASFORMAZIONI iniziali al "themodel" 
-        if(this.enableTransform){
+        //if(this.enableTransform){
             this.applyTransform();
-        }
+        //}
         if(this.isEditor){
             this.createTransformControl();
             this.activeTools();
@@ -1659,6 +1662,44 @@ class e_threed_class_modelimport {
         obj.position.copy(cent).multiplyScalar((dim/2)*-1);
         
     }
+    toFloor(){
+        
+        const $target = this.themodel;
+        var obox = new Box3().setFromObject($target);
+        //
+        var size = obox.getSize(new Vector3());
+        
+        //Rescale the object to normalized space
+        //var maxAxis = Math.max(size.x, size.y, size.z);
+        const bounding_y = size.y;
+        const floorPos = (this.ambientPosY+this.default_ambientPosY ) * -1;
+        let posfloor = (floorPos-(bounding_y/2)) * -1
+        //alert(floorPos+' - '+bounding_y+' - '+posfloor);
+        $target.position.y = posfloor;
+
+        this.triggerHandler('tofloor',[   
+            $target.position.x,
+            $target.position.y,
+            $target.position.z,
+            $target.rotation.x,
+            $target.rotation.y,
+            $target.rotation.z,
+            $target.scale.x,
+            $target.scale.y,
+            $target.scale.z,
+        ]);
+        this.triggerHandler('TCchange',[   
+            $target.position.x,
+            $target.position.y,
+            $target.position.z,
+            MathUtils.radToDeg($target.rotation.x),
+            MathUtils.radToDeg($target.rotation.y),
+            MathUtils.radToDeg($target.rotation.z),
+            $target.scale.x,
+            $target.scale.y,
+            $target.scale.z,
+        ]);
+    }
     percentage(partialValue, totalValue) {
         return (1 * partialValue) / totalValue;
     } 
@@ -1945,13 +1986,6 @@ class e_threed_class_modelimport {
 
             this.clean3DskyImage();
             this.generateSkyImage();
-            
-            if(this.ambientSkyPath){
-                this.scene.background = this.sky_texture;
-            }else{
-                this.scene.background = new Color(this.ambientSkyColor);
-            }
-            this.render();
         }
         
         if ('sky_environmentimage' === propertyName) {
