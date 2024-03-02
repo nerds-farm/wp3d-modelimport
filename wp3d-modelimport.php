@@ -57,7 +57,7 @@ add_action( 'init', function () {
         
         register_block_type(__DIR__ . '/build/blocks/modelimport');
        
-        $localized = wp_set_script_translations( 'wp3d-blocks-editor-script', 'wp3d-blocks', plugin_dir_path( __FILE__ ) . 'languages' );
+        $localized = wp_set_script_translations( 'wp3d-modelimport-editor-script', 'wp3d-blocks', plugin_dir_path( __FILE__ ) . 'languages' );
 
         include_once(__DIR__.DIRECTORY_SEPARATOR.'plugin.php');
         $wp3d = \WP3D\Plugin::instance();

@@ -170,15 +170,7 @@ class License {
                 update_option('envato_token', $token);
             }
         }
-        if (!empty($_POST['action']) && $_POST['action'] == 'integrations') {
-            if (empty($_POST['google_maps_api'])) {
-                delete_option('google_maps_api');
-            } else {
-                $api = trim($_POST['google_maps_api']);
-                $api = sanitize_locale_name($api);
-                update_option('google_maps_api', $api);
-            }
-        }
+        
         ?>
         <div class="wrap">
 
@@ -215,20 +207,6 @@ class License {
                 delete_option($this->get_plugin_folder() . '_license_status');
             }
             ?>
-            </div>
-            
-            <div class="card">
-                <form method="post" action="?page=<?php echo $this->get_page_name(); ?>">
-                    <h2><?php esc_html_e('Integrations', 'wp3d-earth'); ?></h2>
-                    <input type="hidden" name="action" value="integrations">
-                    <p>
-                        <label><b><?php esc_html_e('Google Maps API Key'); ?> (optional)</b></label>
-                        <input style="width:100%" type="text" id="google_maps_api" name="google_maps_api" value="<?php echo sanitize_locale_name(get_option('google_maps_api')); ?>" />
-                    </p>
-                    <?php
-                    submit_button();
-                    ?>
-                </form>
             </div>
         </div>
         <?php

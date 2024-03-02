@@ -1,7 +1,7 @@
 {
   "translation-revision-date": "2024-03-02 19:07+0000",
   "generator": "WP-CLI/2.9.0",
-  "source": "ViewportPanel.js",
+  "source": "editor.js",
   "domain": "messages",
   "locale_data": {
     "messages": {
