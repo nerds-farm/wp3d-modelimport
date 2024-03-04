@@ -26,7 +26,7 @@ canvas.threed-canvas{
 .wp3d-tools-object3d.active{
 	display: block;
 }
-.wp3d-tools-object3d > span{
+.wp3d-tools-object3d > span, .wp3d-navigator > span{
 	padding: 5px;
 	border-radius: 4px;
 	border: #ccc solid 1px;
@@ -54,6 +54,38 @@ canvas.threed-canvas{
 .wp3d-tools-object3d-scale{
 	background-image: url('../../../assets/img/tools/scale.svg');
 }
+
+.wp3d-navigator{
+	bottom: 10px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: auto;
+	
+	color: #000;
+	position: absolute;
+	
+	// display: none;
+}
+
+.wp3d-nav-left{
+	background-image: url('../../../assets/img/tools/view_left.svg');
+}
+.wp3d-nav-right{
+	background-image: url('../../../assets/img/tools/view_right.svg');
+}
+.wp3d-nav-top{
+	background-image: url('../../../assets/img/tools/view_up.svg');
+}
+.wp3d-nav-front{
+	background-image: url('../../../assets/img/tools/view_front.svg');
+}
+.wp3d-nav-back{
+	background-image: url('../../../assets/img/tools/view_back.svg');
+}
+.wp3d-nav-default{
+	background-image: url('../../../assets/img/tools/reset.svg');
+}
+
 
 
 

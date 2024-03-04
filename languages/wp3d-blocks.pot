@@ -472,6 +472,22 @@ msgid "Spot Light Intensity"
 msgstr ""
 
 #: edit.js
+msgid "Enable Left Light"
+msgstr ""
+
+#: edit.js
+msgid "Left Light Intensity"
+msgstr ""
+
+#: edit.js
+msgid "Enable Right Light"
+msgstr ""
+
+#: edit.js
+msgid "Right Light Intensity"
+msgstr ""
+
+#: edit.js
 msgid "Contact Shadow"
 msgstr ""
 
@@ -566,3 +582,76 @@ msgstr ""
 #: edit.js
 msgid "Scale"
 msgstr ""
+
+#: edit.js
+msgid "Height"
+msgstr ""
+
+#: edit.js
+msgid "Navigator"
+msgstr ""
+
+#: edit.js
+msgid "Default"
+msgstr ""
+
+#: edit.js
+msgid "Left"
+msgstr ""
+
+#: edit.js
+msgid "Right"
+msgstr ""
+
+#: edit.js
+msgid "Front"
+msgstr ""
+
+#: edit.js
+msgid "Back"
+msgstr ""
+
+#: edit.js
+msgid "Deg"
+msgstr ""
+
+#: edit.js
+msgid "Helpers"
+msgstr ""
+
+#: edit.js
+msgid "These options are only visible in the editor"
+msgstr ""
+
+#: edit.js
+msgid "Floor"
+msgstr ""
+
+#: edit.js
+msgid "Center"
+msgstr ""
+
+#: edit.js
+msgid "Spot Light"
+msgstr ""
+
+#: edit.js
+msgid "Left Light"
+msgstr ""
+
+#: edit.js
+msgid "Right Light"
+msgstr ""
+
+#: edit.js
+msgid "Target on DubleClick"
+msgstr ""
+
+#: edit.js
+msgid "Scroll on Rotation"
+msgstr ""
+
+#: edit.js
+msgid "Device Orientation"
+msgstr ""
+

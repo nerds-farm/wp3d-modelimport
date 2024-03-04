@@ -1,6 +1,6 @@
 <?php
 
-namespace WP3D;
+namespace WP3DModelImport;
 
 /**
  * Copyright to Worpress
@@ -46,7 +46,7 @@ class License {
         if (is_admin() && (empty($_GET['page']) || $_GET['page'] != $this->get_page_name())) {
             if (!$this->is_valid_license()) {
                 add_action('admin_notices', function () {
-                    $this->_notice($this->get_plugin_title() . ' ' . esc_html__('is not fully activated!') . ' <a class="button" href="' . $this->get_settings_url() . '">' . esc_html__('Activate now') . '</a>', 'error');
+                    $this->_notice($this->get_plugin_title() . ' ' . esc_html__('is not fully activated!','wp3d-blocks') . ' <a class="button" href="' . $this->get_settings_url() . '">' . esc_html__('Activate now','wp3d-blocks') . '</a>', 'error');
                 });
                 $folder = basename(__DIR__);
                 $al_hook = 'plugin_action_links_' . $folder . '/' . $folder . '.php';
@@ -94,7 +94,7 @@ class License {
     }
 
     public function _notice($message, $type = 'success') {
-        echo '<div class="notice is-dismissible notice-' . $type . ' notice-alt"><p><img class="wp3d-logo-admin" src="' . WP3D_EARTH_BLOCKS_PLUGIN_URL . 'assets/img/wp3d.png" width="30" style="width: 30px; vertical-align: top;" /> ' . $message . '</p></div>';
+        echo '<div class="notice is-dismissible notice-' . $type . ' notice-alt"><p><img class="wp3d-logo-admin" src="' . WP3D_MODELIMPORT_PLUGIN_URL . 'assets/img/wp3d.png" width="30" style="width: 30px; vertical-align: top;" /> ' . $message . '</p></div>';
     }
 
     public function get_plugin_folder() {
@@ -174,7 +174,7 @@ class License {
         ?>
         <div class="wrap">
 
-            <h1><img class="wp3d-logo-admin" src="<?php echo WP3D_EARTH_BLOCKS_PLUGIN_URL . 'assets/img/wp3d.png'; ?>" /> <?php echo $this->get_plugin_title(); ?> <?php esc_html_e('Settings', 'wp3d-earth'); ?></h1>
+            <h1><img class="wp3d-logo-admin" src="<?php echo WP3D_MODELIMPORT_PLUGIN_URL . 'assets/img/wp3d.png'; ?>" /> <?php echo $this->get_plugin_title(); ?> <?php esc_html_e('Settings', 'wp3d-earth'); ?></h1>
             <div class="card">
                 <form method="post" action="?page=<?php echo $this->get_page_name(); ?>">
                     <h2><?php esc_html_e('License', 'wp3d-earth'); ?></h2>

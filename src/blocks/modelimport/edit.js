@@ -23,6 +23,7 @@ import {
 	ColorIndicator,
 	Icon,
 	Button,
+	FormTokenField,
 	__experimentalToggleGroupControl as ToggleGroupControl,
     __experimentalToggleGroupControlOption as ToggleGroupControlOption,
 	NavigableMenu,
@@ -80,6 +81,7 @@ export default function Edit( props ) {
 	
 	const [ light3D_element, setLight3D_element ] = useState( null );
 	const [ points3D_element, setPoints3D_element ] = useState( null );
+	const [ selectedHelpers, setSelectedHelpers ] = useState( [] );
 
 	const [ oldIde, setOldIde ] = useState( [] );
 	const [ newIde, setNewIde ] = useState( [] );
@@ -101,6 +103,16 @@ export default function Edit( props ) {
 		countLight,
 		light_intensity,
 		spot_intensity,
+		leftspot_intensity,
+		rightspot_intensity,
+		helpers,
+		helper_center,
+		helper_floor,
+		helper_spotlight,
+		helper_leftlight,
+		helper_rightlight,
+		enable_navigator,
+		buttons_navigator,
 		sky_transparent,
 		sky_color,
 		sky_showimage,
@@ -482,6 +494,14 @@ export default function Edit( props ) {
 					<span className="wp3d-tools-object3d-rot">&nbsp;</span>
 					<span className="wp3d-tools-object3d-scale">&nbsp;</span>
 				</div>
+				<div className="wp3d-navigator">
+					<span className="wp3d-nav-left">&nbsp;</span>
+					<span className="wp3d-nav-right">&nbsp;</span>
+					<span className="wp3d-nav-top">&nbsp;</span>
+					<span className="wp3d-nav-front">&nbsp;</span>
+					<span className="wp3d-nav-back">&nbsp;</span>
+					<span className="wp3d-nav-default">&nbsp;</span>
+				</div>
 			</div>
 		</div>
 		
@@ -700,6 +720,26 @@ export default function Edit( props ) {
 					allowReset={true}
 					resetFallbackValue={ 1 }
 				/>
+				<RangeControl
+					label={ __( 'Left Light Intensity', 'wp3d-blocks' )}
+					value={ leftspot_intensity }
+					onChange={ ( val ) => onChangeValue("leftspot_intensity",{ leftspot_intensity: val }) }
+					min={ 0 }
+					max={ 10 }
+					step={ 0.01 }
+					allowReset={true}
+					resetFallbackValue={ 0 }
+				/>
+				<RangeControl
+					label={ __( 'Right Light Intensity', 'wp3d-blocks' )}
+					value={ rightspot_intensity }
+					onChange={ ( val ) => onChangeValue("rightspot_intensity",{ rightspot_intensity: val }) }
+					min={ 0 }
+					max={ 10 }
+					step={ 0.01 }
+					allowReset={true}
+					resetFallbackValue={ 0 }
+				/>
 			</PanelBody>
 			
 			<PanelBody 
@@ -777,21 +817,11 @@ export default function Edit( props ) {
 				>
 				<ToggleControl
 					label={ __( 'CastShadow', 'wp3d-blocks' )}
-					// help={
-					// 	objshadows_castShadow
-					// 		? 'Show'
-					// 		: 'Hide'
-					// }
 					checked={ objshadows_castShadow }
 					onChange={ ( val ) => onChangeValue("objshadows_castShadow",{ objshadows_castShadow: val }) }
 				/>
 				<ToggleControl
 					label={ __( 'ReceiveShadow', 'wp3d-blocks' )}
-					// help={
-					// 	objshadows_receiveShadow
-					// 		? 'Show'
-					// 		: 'Hide'
-					// }
 					checked={ objshadows_receiveShadow }
 					onChange={ ( val ) => onChangeValue("objshadows_receiveShadow",{ objshadows_receiveShadow: val }) }
 				/>
@@ -1025,9 +1055,70 @@ export default function Edit( props ) {
 				</div>}
 				
 			</PanelBody>
-
+			<PanelBody 
+			title={ __( 'Navigator', 'wp3d-blocks' )}
+			initialOpen={false}
+			>
+				<h1>TO DO</h1>
+			</PanelBody>
 			<ViewportPanel props={props} onChange={onChangeValue} />
 			
+			<PanelBody 
+				title={ __( 'Helpers', 'wp3d-blocks' )}
+				initialOpen={false}
+				>
+				<p>{ __( 'These options are only visible in the editor', 'wp3d-blocks' )}</p>
+				<ToggleControl
+					label={ __( 'Center', 'wp3d-blocks' )}
+					checked={ helper_center }
+					onChange={ ( val ) => onChangeValue("helper_center",{ helper_center: val }) }
+				/>
+				<ToggleControl
+					label={ __( 'Floor', 'wp3d-blocks' )}
+					checked={ helper_floor }
+					onChange={ ( val ) => onChangeValue("helper_floor",{ helper_floor: val }) }
+				/>
+				<ToggleControl
+					label={ __( 'Light', 'wp3d-blocks' )}
+					checked={ helper_spotlight }
+					onChange={ ( val ) => onChangeValue("helper_spotlight",{ helper_spotlight: val }) }
+				/>
+				{/* <ToggleControl
+					label={ __( 'Left Light', 'wp3d-blocks' )}
+					checked={ helper_leftlight }
+					onChange={ ( val ) => onChangeValue("helper_leftlight",{ helper_leftlight: val }) }
+				/>
+				<ToggleControl
+					label={ __( 'Right Light', 'wp3d-blocks' )}
+					checked={ helper_rightlight }
+					onChange={ ( val ) => onChangeValue("helper_rightlight",{ helper_rightlight: val }) }
+				/> */}
+			</PanelBody>
+			{/* <PanelBody 
+				title={ __( 'Helpers', 'wp3d-blocks' )}
+				initialOpen={false}
+				>
+					<h5>{__( 'Select helpers', 'wp3d-blocks' )}</h5>
+					<ul>
+						<li>{__( 'Floor', 'wp3d-blocks' )}</li>
+						<li>{__( 'Center', 'wp3d-blocks' )}</li>
+						<li>{__( 'Spot Light', 'wp3d-blocks' )}</li>
+						<li>{__( 'Left Light', 'wp3d-blocks' )}</li>
+						<li>{__( 'Right Light', 'wp3d-blocks' )}</li>
+					</ul>
+					<FormTokenField
+
+						value={ selectedHelpers }
+						suggestions={ helpers }
+						onChange={ ( tokens ) => {
+							setSelectedHelpers( tokens )
+							onChangeValue("helpers",{ helpers: tokens })
+						} }
+					/>
+					
+					<p>{ __( 'These options are only visible in the editor', 'wp3d-blocks' )}</p>
+					
+				</PanelBody> */}
 		</InspectorControls>
 		</>
 	);

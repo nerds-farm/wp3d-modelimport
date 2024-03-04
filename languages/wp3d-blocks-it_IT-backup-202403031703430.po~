@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: WP3D Blocks\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-02 06:40+0000\n"
-"PO-Revision-Date: 2024-03-03 17:03+0000\n"
+"PO-Revision-Date: 2024-03-03 16:56+0000\n"
 "Last-Translator: \n"
 "Language-Team: Italiano\n"
 "MIME-Version: 1.0\n"
@@ -58,10 +58,6 @@ msgstr "RotazioneAutomaitca"
 #: edit.js
 msgid "AutoScale"
 msgstr "ScalaAutomatica"
-
-#: edit.js
-msgid "Back"
-msgstr "Dietro"
 
 #: edit.js
 msgid "Background"
@@ -156,10 +152,6 @@ msgstr "Fattore di Smorzamento"
 #: edit.js
 msgid "Darkness"
 msgstr "Ombreggiature"
-
-#: edit.js
-msgid "Default"
-msgstr "Predefinita"
 
 #: edit.js
 msgid "Deg"
@@ -264,10 +256,6 @@ msgstr "Tipo di Formato"
 #: edit.js
 msgid "Fov"
 msgstr "Focale"
-
-#: edit.js
-msgid "Front"
-msgstr "Frontale"
 
 #: point:edit.js
 msgid "Generate Lat/Lng"

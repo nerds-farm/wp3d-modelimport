@@ -230,7 +230,25 @@ class e_threed_class_modelimport {
     this.ambientlightColor = 0xFFFFFF; //this.elementSettings.ambientlight_color || 0xFFFFFF;
     this.ambientlightIntensity = this.elementSettings.light_intensity || 1;
     this.spotlightIntensity = this.elementSettings.spot_intensity || 1;
+    this.leftspotlightIntensity = this.elementSettings.leftspot_intensity || 0;
+    this.rightspotlightIntensity = this.elementSettings.rightspot_intensity || 0;
     this.cameraLight = null;
+    this.shadowCameraHelper = null;
+    this.leftcameraLight = null;
+    this.rightcameraLight = null;
+
+    //HELPERS
+    this.isHelperCenter = Boolean(this.elementSettings.helper_center);
+    this.isHelperFloor = Boolean(this.elementSettings.helper_floor);
+    this.isHelperSpotLight = Boolean(this.elementSettings.helper_spotlight);
+    this.isHelperLeftLight = Boolean(this.elementSettings.helper_leftlight); //sospeso
+    this.isHelperRightLight = Boolean(this.elementSettings.helper_rightlight); //sospeso
+
+    this.axesHelper = null;
+    this.gridHelper = null;
+    this.spotHelper = null;
+    this.leftLightHelper = null;
+    this.rightLeftHelper = null;
 
     //SKY
     this.skyType = this.elementSettings.sky_type; // stars, transparent, backgroundcolor, image
@@ -478,6 +496,8 @@ class e_threed_class_modelimport {
     // }
     this.ambientlightIntensity = this.elementSettings.light_intensity || 1;
     this.spotlightIntensity = this.elementSettings.spot_intensity || 1;
+    this.leftspotlightIntensity = this.elementSettings.leftspot_intensity || 0;
+    this.rightspotlightIntensity = this.elementSettings.rightspot_intensity || 0;
     //console.log('al'+this.ambientLight)
     if (!this.ambientLight) {
       //alert('al')
@@ -496,24 +516,42 @@ class e_threed_class_modelimport {
       this.cameraLight.name = 'cl';
       this.cameraLight.position.set(100, 0, 100);
       this.camera.add(this.cameraLight);
-      this.scene.add(this.camera);
     }
-
+    if (!this.leftcameraLight) {
+      this.leftcameraLight = new three__WEBPACK_IMPORTED_MODULE_0__.DirectionalLight(0xffffff, this.spotlightIntensity);
+      this.leftcameraLight.castShadow = true;
+      this.leftcameraLight.name = 'cl';
+      this.leftcameraLight.position.set(-200, 0, 100);
+      this.camera.add(this.leftcameraLight);
+    }
+    if (!this.rightcameraLight) {
+      this.rightcameraLight = new three__WEBPACK_IMPORTED_MODULE_0__.DirectionalLight(0xffffff, this.spotlightIntensity);
+      this.rightcameraLight.castShadow = true;
+      this.rightcameraLight.name = 'cl';
+      this.rightcameraLight.position.set(200, 0, 100);
+      this.camera.add(this.rightcameraLight);
+    }
+    this.scene.add(this.camera);
     //}
     //console.log(this.scene)
   }
 
   removeLight() {
     if (this.cameraLight) {
-      //alert('remove cameraLight')
-      //let cl = this.scene.getObjectByName('cl')
       this.camera.remove(this.cameraLight);
       this.cameraLight.dispose();
       this.cameraLight = null;
-
-      //this.scene.remove( this.camera );
     }
-
+    if (this.leftcameraLight) {
+      this.camera.remove(this.leftcameraLight);
+      this.leftcameraLight.dispose();
+      this.leftcameraLight = null;
+    }
+    if (this.rightcameraLight) {
+      this.camera.remove(this.rightcameraLight);
+      this.rightcameraLight.dispose();
+      this.rightcameraLight = null;
+    }
     if (this.ambientLight) {
       //let al = this.scene.getObjectByName('al')
       this.scene.remove(this.ambientLight);
@@ -781,6 +819,10 @@ class e_threed_class_modelimport {
       }
       //console.log('The Model:',ob);
 
+      if (this.isEditor) {
+        this.updateHelpers();
+      }
+
       //
       setTimeout(() => {
         if (this.nprogress) this.nprogress.done();
@@ -808,6 +850,66 @@ class e_threed_class_modelimport {
   updateModel() {
     this.removeModel();
     this.addModel(true);
+  }
+  updateHelpers() {
+    console.log('HelpLight', this.isHelperSpotLight);
+    console.log(this.scene);
+    // Center Helper
+    if (this.isHelperCenter) {
+      if (!this.axesHelper) {
+        this.axesHelper = new three__WEBPACK_IMPORTED_MODULE_0__.AxesHelper(500);
+        this.scene.add(this.axesHelper);
+      }
+    } else {
+      if (this.axesHelper) {
+        this.scene.remove(this.axesHelper);
+        this.axesHelper.dispose();
+        this.axesHelper = null;
+      }
+    }
+    // Floor Helper
+    if (this.isHelperFloor) {
+      if (!this.gridHelper) {
+        //gridHelper = new GridHelper( 10, 2 );
+        this.gridHelper = new three__WEBPACK_IMPORTED_MODULE_0__.PolarGridHelper();
+        this.gridHelper.position.y = this.ambientPosY + this.default_ambientPosY;
+        this.scene.add(this.gridHelper);
+      }
+    } else {
+      if (this.gridHelper) {
+        this.scene.remove(this.gridHelper);
+        this.gridHelper.dispose();
+        this.gridHelper = null;
+      }
+    }
+    // Spot Helper
+    if (this.isHelperSpotLight) {
+      if (this.cameraLight) {
+        if (!this.lightHelper) {
+          this.lightHelper = new three__WEBPACK_IMPORTED_MODULE_0__.DirectionalLightHelper(this.cameraLight, 1);
+          if (this.isShadows) {
+            this.shadowCameraHelper = new three__WEBPACK_IMPORTED_MODULE_0__.CameraHelper(this.cameraLight.shadow.camera);
+            this.scene.add(this.shadowCameraHelper);
+          }
+          this.scene.add(this.lightHelper);
+        }
+      }
+    } else {
+      if (this.lightHelper) {
+        if (this.isShadows) {
+          this.scene.remove(this.shadowCameraHelper);
+          this.shadowCameraHelper.dispose();
+          this.shadowCameraHelper = null;
+        }
+        this.scene.remove(this.lightHelper);
+        this.lightHelper.dispose();
+        this.lightHelper = null;
+      }
+    }
+    // LeftSpot Helper
+    if (this.isHelperLeftLight) {} else {}
+    // RightSpot Helper
+    if (this.isHelperRightLight) {} else {}
   }
 
   // ---------------------------------------------------
@@ -856,7 +958,7 @@ class e_threed_class_modelimport {
     if (this.nprogress) this.nprogress.done();
     this.loadingmessage.show().html('<b>file not found</b> ' + a);
 
-    //alert(this.threed.id_scope_container+' file not found '+ a)
+    //alert(this.id_scope_container+' file not found '+ a)
   };
 
   import_model($importType) {
@@ -1722,6 +1824,38 @@ class e_threed_class_modelimport {
       this.cameraLight.intensity = this.spotlightIntensity;
       this.render();
     }
+    if ('leftspot_intensity' === propertyName) {
+      this.leftspotlightIntensity = this.elementSettings.leftspot_intensity || 1;
+      this.cameraLight.intensity = this.leftspotlightIntensity;
+      this.render();
+    }
+    if ('rightspot_intensity' === propertyName) {
+      this.rightspotlightIntensity = this.elementSettings.rightspot_intensity || 1;
+      this.cameraLight.intensity = this.rightspotlightIntensity;
+      this.render();
+    }
+
+    // HELPERS --------------------------------------
+    if ('helper_center' === propertyName) {
+      this.isHelperCenter = Boolean(this.elementSettings.helper_center);
+      this.updateHelpers();
+    }
+    if ('helper_floor' === propertyName) {
+      this.isHelperFloor = Boolean(this.elementSettings.helper_floor);
+      this.updateHelpers();
+    }
+    if ('helper_spotlight' === propertyName) {
+      this.isHelperSpotLight = Boolean(this.elementSettings.helper_spotlight);
+      this.updateHelpers();
+    }
+    // if ('helper_leftlight' === propertyName) {
+    //     this.isHelperLeftLight = Boolean(this.elementSettings.helper_leftlight);
+    //     this.updateHelpers();
+    // }
+    // if ('helper_rightlight' === propertyName) {
+    //     this.isHelperRightLight = Boolean(this.elementSettings.helper_rightlight);
+    //     this.updateHelpers();
+    // }
     // SHADOWS --------------------------------------
     if ('objshadows_castShadow' === propertyName) {
       this.objCastShadow = Boolean(this.elementSettings.objshadows_castShadow);

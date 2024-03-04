@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: WP3D Blocks\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-02 06:40+0000\n"
-"PO-Revision-Date: 2024-03-03 17:03+0000\n"
+"PO-Revision-Date: 2024-03-03 16:36+0000\n"
 "Last-Translator: \n"
 "Language-Team: Italiano\n"
 "MIME-Version: 1.0\n"
@@ -60,10 +60,6 @@ msgid "AutoScale"
 msgstr "ScalaAutomatica"
 
 #: edit.js
-msgid "Back"
-msgstr "Dietro"
-
-#: edit.js
 msgid "Background"
 msgstr "Sfondo"
 
@@ -104,10 +100,6 @@ msgstr "Cenetro Camera"
 #: edit.js
 msgid "CastShadow"
 msgstr "ProiettaOmbre"
-
-#: edit.js
-msgid "Center"
-msgstr "Centro"
 
 #: edit.js
 msgid "Choose an 3D"
@@ -158,20 +150,12 @@ msgid "Darkness"
 msgstr "Ombreggiature"
 
 #: edit.js
-msgid "Default"
-msgstr "Predefinita"
-
-#: edit.js
 msgid "Deg"
 msgstr "Gradi"
 
 #: point:edit.js
 msgid "Description"
 msgstr "Descrizione"
-
-#: edit.js
-msgid "Device Orientation"
-msgstr "Orientamento Dispositivo"
 
 #: edit.js
 msgid "Dimension"
@@ -250,10 +234,6 @@ msgid "Fixed"
 msgstr "Fissa"
 
 #: edit.js
-msgid "Floor"
-msgstr "Pavimento"
-
-#: edit.js
 msgid "Folder URL"
 msgstr "URL della Cartella"
 
@@ -264,10 +244,6 @@ msgstr "Tipo di Formato"
 #: edit.js
 msgid "Fov"
 msgstr "Focale"
-
-#: edit.js
-msgid "Front"
-msgstr "Frontale"
 
 #: point:edit.js
 msgid "Generate Lat/Lng"
@@ -280,10 +256,6 @@ msgstr "Cuore"
 #: edit.js
 msgid "Height"
 msgstr "Altezza"
-
-#: edit.js
-msgid "Helpers"
-msgstr "Aiuti"
 
 #: point:edit.js
 msgid "Image"
@@ -344,10 +316,6 @@ msgstr "Latitudine"
 #: edit.js
 msgid "Left"
 msgstr "Sinistra"
-
-#: edit.js
-msgid "Left Light"
-msgstr "Luce Sinistra"
 
 #: edit.js
 msgid "Left Light Intensity"
@@ -478,10 +446,6 @@ msgid "Right"
 msgstr "Destra"
 
 #: edit.js
-msgid "Right Light"
-msgstr "Luce Destra"
-
-#: edit.js
 msgid "Right Light Intensity"
 msgstr "Intensità Luce Destra"
 
@@ -496,10 +460,6 @@ msgstr "Rugosità"
 #: edit.js
 msgid "Scale"
 msgstr "Scala"
-
-#: edit.js
-msgid "Scroll on Rotation"
-msgstr "Rotazione allo Scroll"
 
 #: edit.js
 msgid "Select shape"
@@ -537,10 +497,6 @@ msgid "Speed"
 msgstr "Velocità"
 
 #: edit.js
-msgid "Spot Light"
-msgstr "Luce Spot"
-
-#: edit.js
 msgid "Spot Light Intensity"
 msgstr "Intensità Luce Spot"
 
@@ -559,10 +515,6 @@ msgstr "Traccia"
 #: license.php:339
 msgid "Supported until"
 msgstr "Supportato fino al"
-
-#: edit.js
-msgid "Target on DubleClick"
-msgstr "Puntamento al DoppioClick"
 
 #: edit.js
 msgid "Terrain color"
@@ -593,10 +545,6 @@ msgstr ""
 "L'importazione di modelli è consentita da Libreria multimediale, Cartelle e "
 "anche da CDN. Ci sono molti formati consentiti. Ideale per esporre tutti i "
 "tipi di modelli. L’obiettivo è quello di coniugare 3D e Web Design."
-
-#: edit.js
-msgid "These options are only visible in the editor"
-msgstr "Queste opzioni sono visibili solo nell'editor"
 
 #: ViewportPanel.js
 msgid ""

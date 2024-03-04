@@ -51,7 +51,7 @@ add_action( 'init', function () {
     require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'file.php';
     require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-upgrader.php';
     include_once(__DIR__.DIRECTORY_SEPARATOR.'license.php');
-    $license = new \WP3D\License();
+    $license = new \WP3DModelImport\License();
     
     if ($license->is_active()) {
         
@@ -85,7 +85,7 @@ add_filter('block_categories_all', function ($categories) {
             [
                 [
                     'slug' => 'wp3d-blocks',
-                    'title' => __('Wp3D', 'wp3d'),
+                    'title' => 'Wp3D',
                 ],
             ],
             $categories,
@@ -107,9 +107,9 @@ add_action('admin_enqueue_scripts', function () {
     wp_enqueue_style('wp3d-admin', WP3D_MODELIMPORT_PLUGIN_URL . '/assets/css/admin.css', false, '1.0.0');
 });
 
-add_action('wp_enqueue_scripts', 'wp3d_custom_javascript');
-add_action('admin_enqueue_scripts', 'wp3d_custom_javascript');
-function wp3d_custom_javascript() {
+add_action('wp_enqueue_scripts', 'wp3d_modelimport_custom_javascript');
+add_action('admin_enqueue_scripts', 'wp3d_modelimport_custom_javascript');
+function wp3d_modelimport_custom_javascript() {
     
     ?>
     <script>

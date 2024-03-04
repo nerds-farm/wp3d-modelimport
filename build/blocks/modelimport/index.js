@@ -98,6 +98,7 @@ function Edit(props) {
   const [importModel3D_element, setImportmodel3D_element] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
   const [light3D_element, setLight3D_element] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [points3D_element, setPoints3D_element] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [selectedHelpers, setSelectedHelpers] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const [oldIde, setOldIde] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const [newIde, setNewIde] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_5__.useBlockProps)();
@@ -118,6 +119,16 @@ function Edit(props) {
     countLight,
     light_intensity,
     spot_intensity,
+    leftspot_intensity,
+    rightspot_intensity,
+    helpers,
+    helper_center,
+    helper_floor,
+    helper_spotlight,
+    helper_leftlight,
+    helper_rightlight,
+    enable_navigator,
+    buttons_navigator,
     sky_transparent,
     sky_color,
     sky_showimage,
@@ -526,6 +537,20 @@ function Edit(props) {
     className: "wp3d-tools-object3d-rot"
   }, "\xA0"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "wp3d-tools-object3d-scale"
+  }, "\xA0")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "wp3d-navigator"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "wp3d-nav-left"
+  }, "\xA0"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "wp3d-nav-right"
+  }, "\xA0"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "wp3d-nav-top"
+  }, "\xA0"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "wp3d-nav-front"
+  }, "\xA0"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "wp3d-nav-back"
+  }, "\xA0"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "wp3d-nav-default"
   }, "\xA0")))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "wp3d-blocks-list"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_5__.InnerBlocks, {
@@ -722,6 +747,28 @@ function Edit(props) {
     step: 0.01,
     allowReset: true,
     resetFallbackValue: 1
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Left Light Intensity', 'wp3d-blocks'),
+    value: leftspot_intensity,
+    onChange: val => onChangeValue("leftspot_intensity", {
+      leftspot_intensity: val
+    }),
+    min: 0,
+    max: 10,
+    step: 0.01,
+    allowReset: true,
+    resetFallbackValue: 0
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Right Light Intensity', 'wp3d-blocks'),
+    value: rightspot_intensity,
+    onChange: val => onChangeValue("rightspot_intensity", {
+      rightspot_intensity: val
+    }),
+    min: 0,
+    max: 10,
+    step: 0.01,
+    allowReset: true,
+    resetFallbackValue: 0
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Contact Shadow', 'wp3d-blocks'),
     initialOpen: false
@@ -799,25 +846,13 @@ function Edit(props) {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Shadows', 'wp3d-blocks'),
     initialOpen: false
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('CastShadow', 'wp3d-blocks')
-    // help={
-    // 	objshadows_castShadow
-    // 		? 'Show'
-    // 		: 'Hide'
-    // }
-    ,
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('CastShadow', 'wp3d-blocks'),
     checked: objshadows_castShadow,
     onChange: val => onChangeValue("objshadows_castShadow", {
       objshadows_castShadow: val
     })
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('ReceiveShadow', 'wp3d-blocks')
-    // help={
-    // 	objshadows_receiveShadow
-    // 		? 'Show'
-    // 		: 'Hide'
-    // }
-    ,
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('ReceiveShadow', 'wp3d-blocks'),
     checked: objshadows_receiveShadow,
     onChange: val => onChangeValue("objshadows_receiveShadow", {
       objshadows_receiveShadow: val
@@ -1058,10 +1093,34 @@ function Edit(props) {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
     variant: "primary",
     onClick: clickResetTransform
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Reset Rotation', 'wp3d-blocks')))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_ViewportPanel_js__WEBPACK_IMPORTED_MODULE_10__["default"], {
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Reset Rotation', 'wp3d-blocks')))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Navigator', 'wp3d-blocks'),
+    initialOpen: false
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h1", null, "TO DO")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_ViewportPanel_js__WEBPACK_IMPORTED_MODULE_10__["default"], {
     props: props,
     onChange: onChangeValue
-  })));
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Helpers', 'wp3d-blocks'),
+    initialOpen: false
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('These options are only visible in the editor', 'wp3d-blocks')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Center', 'wp3d-blocks'),
+    checked: helper_center,
+    onChange: val => onChangeValue("helper_center", {
+      helper_center: val
+    })
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Floor', 'wp3d-blocks'),
+    checked: helper_floor,
+    onChange: val => onChangeValue("helper_floor", {
+      helper_floor: val
+    })
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Light', 'wp3d-blocks'),
+    checked: helper_spotlight,
+    onChange: val => onChangeValue("helper_spotlight", {
+      helper_spotlight: val
+    })
+  }))));
 }
 
 /***/ }),
@@ -2077,7 +2136,25 @@ class e_threed_class_modelimport {
     this.ambientlightColor = 0xFFFFFF; //this.elementSettings.ambientlight_color || 0xFFFFFF;
     this.ambientlightIntensity = this.elementSettings.light_intensity || 1;
     this.spotlightIntensity = this.elementSettings.spot_intensity || 1;
+    this.leftspotlightIntensity = this.elementSettings.leftspot_intensity || 0;
+    this.rightspotlightIntensity = this.elementSettings.rightspot_intensity || 0;
     this.cameraLight = null;
+    this.shadowCameraHelper = null;
+    this.leftcameraLight = null;
+    this.rightcameraLight = null;
+
+    //HELPERS
+    this.isHelperCenter = Boolean(this.elementSettings.helper_center);
+    this.isHelperFloor = Boolean(this.elementSettings.helper_floor);
+    this.isHelperSpotLight = Boolean(this.elementSettings.helper_spotlight);
+    this.isHelperLeftLight = Boolean(this.elementSettings.helper_leftlight); //sospeso
+    this.isHelperRightLight = Boolean(this.elementSettings.helper_rightlight); //sospeso
+
+    this.axesHelper = null;
+    this.gridHelper = null;
+    this.spotHelper = null;
+    this.leftLightHelper = null;
+    this.rightLeftHelper = null;
 
     //SKY
     this.skyType = this.elementSettings.sky_type; // stars, transparent, backgroundcolor, image
@@ -2325,6 +2402,8 @@ class e_threed_class_modelimport {
     // }
     this.ambientlightIntensity = this.elementSettings.light_intensity || 1;
     this.spotlightIntensity = this.elementSettings.spot_intensity || 1;
+    this.leftspotlightIntensity = this.elementSettings.leftspot_intensity || 0;
+    this.rightspotlightIntensity = this.elementSettings.rightspot_intensity || 0;
     //console.log('al'+this.ambientLight)
     if (!this.ambientLight) {
       //alert('al')
@@ -2343,24 +2422,42 @@ class e_threed_class_modelimport {
       this.cameraLight.name = 'cl';
       this.cameraLight.position.set(100, 0, 100);
       this.camera.add(this.cameraLight);
-      this.scene.add(this.camera);
     }
-
+    if (!this.leftcameraLight) {
+      this.leftcameraLight = new three__WEBPACK_IMPORTED_MODULE_0__.DirectionalLight(0xffffff, this.spotlightIntensity);
+      this.leftcameraLight.castShadow = true;
+      this.leftcameraLight.name = 'cl';
+      this.leftcameraLight.position.set(-200, 0, 100);
+      this.camera.add(this.leftcameraLight);
+    }
+    if (!this.rightcameraLight) {
+      this.rightcameraLight = new three__WEBPACK_IMPORTED_MODULE_0__.DirectionalLight(0xffffff, this.spotlightIntensity);
+      this.rightcameraLight.castShadow = true;
+      this.rightcameraLight.name = 'cl';
+      this.rightcameraLight.position.set(200, 0, 100);
+      this.camera.add(this.rightcameraLight);
+    }
+    this.scene.add(this.camera);
     //}
     //console.log(this.scene)
   }
 
   removeLight() {
     if (this.cameraLight) {
-      //alert('remove cameraLight')
-      //let cl = this.scene.getObjectByName('cl')
       this.camera.remove(this.cameraLight);
       this.cameraLight.dispose();
       this.cameraLight = null;
-
-      //this.scene.remove( this.camera );
     }
-
+    if (this.leftcameraLight) {
+      this.camera.remove(this.leftcameraLight);
+      this.leftcameraLight.dispose();
+      this.leftcameraLight = null;
+    }
+    if (this.rightcameraLight) {
+      this.camera.remove(this.rightcameraLight);
+      this.rightcameraLight.dispose();
+      this.rightcameraLight = null;
+    }
     if (this.ambientLight) {
       //let al = this.scene.getObjectByName('al')
       this.scene.remove(this.ambientLight);
@@ -2628,6 +2725,10 @@ class e_threed_class_modelimport {
       }
       //console.log('The Model:',ob);
 
+      if (this.isEditor) {
+        this.updateHelpers();
+      }
+
       //
       setTimeout(() => {
         if (this.nprogress) this.nprogress.done();
@@ -2655,6 +2756,66 @@ class e_threed_class_modelimport {
   updateModel() {
     this.removeModel();
     this.addModel(true);
+  }
+  updateHelpers() {
+    console.log('HelpLight', this.isHelperSpotLight);
+    console.log(this.scene);
+    // Center Helper
+    if (this.isHelperCenter) {
+      if (!this.axesHelper) {
+        this.axesHelper = new three__WEBPACK_IMPORTED_MODULE_0__.AxesHelper(500);
+        this.scene.add(this.axesHelper);
+      }
+    } else {
+      if (this.axesHelper) {
+        this.scene.remove(this.axesHelper);
+        this.axesHelper.dispose();
+        this.axesHelper = null;
+      }
+    }
+    // Floor Helper
+    if (this.isHelperFloor) {
+      if (!this.gridHelper) {
+        //gridHelper = new GridHelper( 10, 2 );
+        this.gridHelper = new three__WEBPACK_IMPORTED_MODULE_0__.PolarGridHelper();
+        this.gridHelper.position.y = this.ambientPosY + this.default_ambientPosY;
+        this.scene.add(this.gridHelper);
+      }
+    } else {
+      if (this.gridHelper) {
+        this.scene.remove(this.gridHelper);
+        this.gridHelper.dispose();
+        this.gridHelper = null;
+      }
+    }
+    // Spot Helper
+    if (this.isHelperSpotLight) {
+      if (this.cameraLight) {
+        if (!this.lightHelper) {
+          this.lightHelper = new three__WEBPACK_IMPORTED_MODULE_0__.DirectionalLightHelper(this.cameraLight, 1);
+          if (this.isShadows) {
+            this.shadowCameraHelper = new three__WEBPACK_IMPORTED_MODULE_0__.CameraHelper(this.cameraLight.shadow.camera);
+            this.scene.add(this.shadowCameraHelper);
+          }
+          this.scene.add(this.lightHelper);
+        }
+      }
+    } else {
+      if (this.lightHelper) {
+        if (this.isShadows) {
+          this.scene.remove(this.shadowCameraHelper);
+          this.shadowCameraHelper.dispose();
+          this.shadowCameraHelper = null;
+        }
+        this.scene.remove(this.lightHelper);
+        this.lightHelper.dispose();
+        this.lightHelper = null;
+      }
+    }
+    // LeftSpot Helper
+    if (this.isHelperLeftLight) {} else {}
+    // RightSpot Helper
+    if (this.isHelperRightLight) {} else {}
   }
 
   // ---------------------------------------------------
@@ -2703,7 +2864,7 @@ class e_threed_class_modelimport {
     if (this.nprogress) this.nprogress.done();
     this.loadingmessage.show().html('<b>file not found</b> ' + a);
 
-    //alert(this.threed.id_scope_container+' file not found '+ a)
+    //alert(this.id_scope_container+' file not found '+ a)
   };
 
   import_model($importType) {
@@ -3569,6 +3730,38 @@ class e_threed_class_modelimport {
       this.cameraLight.intensity = this.spotlightIntensity;
       this.render();
     }
+    if ('leftspot_intensity' === propertyName) {
+      this.leftspotlightIntensity = this.elementSettings.leftspot_intensity || 1;
+      this.cameraLight.intensity = this.leftspotlightIntensity;
+      this.render();
+    }
+    if ('rightspot_intensity' === propertyName) {
+      this.rightspotlightIntensity = this.elementSettings.rightspot_intensity || 1;
+      this.cameraLight.intensity = this.rightspotlightIntensity;
+      this.render();
+    }
+
+    // HELPERS --------------------------------------
+    if ('helper_center' === propertyName) {
+      this.isHelperCenter = Boolean(this.elementSettings.helper_center);
+      this.updateHelpers();
+    }
+    if ('helper_floor' === propertyName) {
+      this.isHelperFloor = Boolean(this.elementSettings.helper_floor);
+      this.updateHelpers();
+    }
+    if ('helper_spotlight' === propertyName) {
+      this.isHelperSpotLight = Boolean(this.elementSettings.helper_spotlight);
+      this.updateHelpers();
+    }
+    // if ('helper_leftlight' === propertyName) {
+    //     this.isHelperLeftLight = Boolean(this.elementSettings.helper_leftlight);
+    //     this.updateHelpers();
+    // }
+    // if ('helper_rightlight' === propertyName) {
+    //     this.isHelperRightLight = Boolean(this.elementSettings.helper_rightlight);
+    //     this.updateHelpers();
+    // }
     // SHADOWS --------------------------------------
     if ('objshadows_castShadow' === propertyName) {
       this.objCastShadow = Boolean(this.elementSettings.objshadows_castShadow);
@@ -82829,7 +83022,7 @@ function toCreasedNormals( geometry, creaseAngle = Math.PI / 3 /* 60 degrees */ 
 /***/ (function(module) {
 
 "use strict";
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"wp3d/modelimport","version":"0.1.0","title":"Model Import","category":"wp3d-blocks","icon":"modelimport-wp3d","description":"Import and view your 3D models on the site and make them interactive.","attributes":{"ide":{"type":"string","default":"wp3d-modelimport3d-0"},"preview":{"type":"boolean","default":false},"countLight":{"type":"number","default":0},"sky_type":{"type":"string","default":"backgroundcolor"},"sky_color":{"type":"string","default":"#FFFFFF"},"sky_environmentimage":{"type":"boolean","default":false},"material_metalness":{"type":"number","default":1},"material_roughness":{"type":"number","default":0},"sky_image":{"type":"object","default":{"id":0,"url":"","alt":"","title":""}},"import_mode":{"type":"string","default":"media_file"},"import_folder_path":{"type":"string","default":""},"import_file_name":{"type":"string","default":"scene"},"import_format_type":{"type":"string","default":"glb"},"import_file":{"type":"object","default":{"id":0,"url":"","alt":"","title":""}},"import_scalemodel":{"type":"boolean","default":true},"import_animationMixer":{"type":"boolean","default":false},"index_animationMixer":{"type":"number","default":0},"useDamping":{"type":"boolean","default":false},"dampingFactor":{"type":"number","default":0.05},"useZoom":{"type":"boolean","default":false},"autorotate":{"type":"boolean","default":false},"autorotateSpeed":{"type":"number","default":1},"objshadows_receiveShadow":{"type":"boolean","default":false},"objshadows_castShadow":{"type":"boolean","default":false},"enableContactshadow":{"type":"boolean","default":false},"cs_color":{"type":"string","default":"#000000"},"cs_blurx":{"type":"number","default":0.5},"cs_blury":{"type":"number","default":0.5},"cs_darkness":{"type":"number","default":1},"cs_sensibility":{"type":"number","default":0.5},"cs_opacity":{"type":"number","default":1},"camera_fov":{"type":"number","default":40},"camera_zoom":{"type":"number","default":1},"enableTransform":{"type":"boolean","default":false},"geometry_mesh_posx":{"type":"number","default":0},"geometry_mesh_posy":{"type":"number","default":0},"geometry_mesh_posz":{"type":"number","default":0},"geometry_mesh_rotx":{"type":"number","default":0},"geometry_mesh_roty":{"type":"number","default":0},"geometry_mesh_rotz":{"type":"number","default":0},"geometry_mesh_scale":{"type":"number","default":1},"camera_posx":{"type":"number","default":0},"camera_posy":{"type":"number","default":0},"camera_posz":{"type":"number","default":4},"camera_targetx":{"type":"number","default":0},"camera_targety":{"type":"number","default":0},"camera_targetz":{"type":"number","default":0},"light_intensity":{"type":"number","default":1},"spot_intensity":{"type":"number","default":1},"enable_leftlight":{"type":"boolean","default":false},"leftspot_intensity":{"type":"number","default":1},"enable_rightlight":{"type":"boolean","default":false},"rightspot_intensity":{"type":"number","default":1},"renderer_physicallyCorrectLights":{"type":"boolean","default":false},"renderer_outputEncoding":{"type":"string","default":"sRGBEncoding"},"renderer_toneMapping":{"type":"string","default":"NoToneMapping"},"renderer_toneMapping_exposure":{"type":"number","default":0.68},"viewport_ratio":{"type":"string","default":"custom"},"viewport_height":{"type":"string","default":"500px"},"viewport_fixed":{"type":"boolean","default":false}},"supports":{"html":false,"align":["center","wide","full"]},"example":{"attributes":{"preview":true}},"textdomain":"wp3d-blocks","editorScript":["file:./index.js","jquery","nprogress"],"editorStyle":"file:./index.css","style":["file:./style-index.css","nprogress"],"viewScript":["file:./script.js","jquery","nprogress"]}');
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"wp3d/modelimport","version":"0.1.0","title":"Model Import","category":"wp3d-blocks","icon":"modelimport-wp3d","description":"Import and view your 3D models on the site and make them interactive.","attributes":{"ide":{"type":"string","default":"wp3d-modelimport3d-0"},"preview":{"type":"boolean","default":false},"countLight":{"type":"number","default":0},"sky_type":{"type":"string","default":"backgroundcolor"},"sky_color":{"type":"string","default":"#FFFFFF"},"sky_environmentimage":{"type":"boolean","default":false},"material_metalness":{"type":"number","default":1},"material_roughness":{"type":"number","default":0},"sky_image":{"type":"object","default":{"id":0,"url":"","alt":"","title":""}},"import_mode":{"type":"string","default":"media_file"},"import_folder_path":{"type":"string","default":""},"import_file_name":{"type":"string","default":"scene"},"import_format_type":{"type":"string","default":"glb"},"import_file":{"type":"object","default":{"id":0,"url":"","alt":"","title":""}},"import_scalemodel":{"type":"boolean","default":true},"import_animationMixer":{"type":"boolean","default":false},"index_animationMixer":{"type":"number","default":0},"useDamping":{"type":"boolean","default":false},"dampingFactor":{"type":"number","default":0.05},"useZoom":{"type":"boolean","default":false},"autorotate":{"type":"boolean","default":false},"autorotateSpeed":{"type":"number","default":1},"objshadows_receiveShadow":{"type":"boolean","default":false},"objshadows_castShadow":{"type":"boolean","default":false},"enableContactshadow":{"type":"boolean","default":false},"cs_color":{"type":"string","default":"#000000"},"cs_blurx":{"type":"number","default":0.5},"cs_blury":{"type":"number","default":0.5},"cs_darkness":{"type":"number","default":1},"cs_sensibility":{"type":"number","default":0.5},"cs_opacity":{"type":"number","default":1},"camera_fov":{"type":"number","default":40},"camera_zoom":{"type":"number","default":1},"enableTransform":{"type":"boolean","default":false},"geometry_mesh_posx":{"type":"number","default":0},"geometry_mesh_posy":{"type":"number","default":0},"geometry_mesh_posz":{"type":"number","default":0},"geometry_mesh_rotx":{"type":"number","default":0},"geometry_mesh_roty":{"type":"number","default":0},"geometry_mesh_rotz":{"type":"number","default":0},"geometry_mesh_scale":{"type":"number","default":1},"camera_posx":{"type":"number","default":0},"camera_posy":{"type":"number","default":0},"camera_posz":{"type":"number","default":4},"camera_targetx":{"type":"number","default":0},"camera_targety":{"type":"number","default":0},"camera_targetz":{"type":"number","default":0},"light_intensity":{"type":"number","default":1},"spot_intensity":{"type":"number","default":1},"leftspot_intensity":{"type":"number","default":0},"rightspot_intensity":{"type":"number","default":0},"helpers":{"type":"array","default":["center","floor","spotlight","leftlight","rightlight"]},"helper_center":{"type":"boolean","default":false},"helper_floor":{"type":"boolean","default":false},"helper_spotlight":{"type":"boolean","default":false},"helper_leftlight":{"type":"boolean","default":false},"helper_rightlight":{"type":"boolean","default":false},"enable_navigator":{"type":"boolean","default":false},"buttons_navigator":{"type":"array","default":["left","center","right","back"]},"renderer_physicallyCorrectLights":{"type":"boolean","default":false},"renderer_outputEncoding":{"type":"string","default":"sRGBEncoding"},"renderer_toneMapping":{"type":"string","default":"NoToneMapping"},"renderer_toneMapping_exposure":{"type":"number","default":0.68},"viewport_ratio":{"type":"string","default":"custom"},"viewport_height":{"type":"string","default":"500px"},"viewport_fixed":{"type":"boolean","default":false}},"supports":{"html":false,"align":["center","wide","full"]},"example":{"attributes":{"preview":true}},"textdomain":"wp3d-blocks","editorScript":["file:./index.js","jquery","nprogress"],"editorStyle":"file:./index.css","style":["file:./style-index.css","nprogress"],"viewScript":["file:./script.js","jquery","nprogress"]}');
 
 /***/ })
 
