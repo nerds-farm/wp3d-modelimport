@@ -1,7 +1,7 @@
 {
-  "translation-revision-date": "2024-03-02 19:07+0000",
+  "translation-revision-date": "2024-03-03 17:03+0000",
   "generator": "WP-CLI/2.9.0",
-  "source": "editor.js",
+  "source": "ViewportPanel.js",
   "domain": "messages",
   "locale_data": {
     "messages": {
@@ -56,7 +56,7 @@
         "Aggiungi Punto"
       ],
       "Ambient Light Intensity": [
-        "Lice Ambiente Intensità"
+        "Intensità Luce Ambiente"
       ],
       "Animation Mixer": [
         "Animazioni Mixer"
@@ -66,6 +66,9 @@
       ],
       "AutoScale": [
         "ScalaAutomatica"
+      ],
+      "Back": [
+        "Dietro"
       ],
       "Background": [
         "Sfondo"
@@ -88,6 +91,9 @@
       "CastShadow": [
         "ProiettaOmbre"
       ],
+      "Center": [
+        "Centro"
+      ],
       "Choose an 3D": [
         "Seleziona un Modello3D"
       ],
@@ -109,6 +115,15 @@
       "Darkness": [
         "Ombreggiature"
       ],
+      "Default": [
+        "Predefinita"
+      ],
+      "Deg": [
+        "Gradi"
+      ],
+      "Device Orientation": [
+        "Orientamento Dispositivo"
+      ],
       "Dimension": [
         "Dimensione"
       ],
@@ -123,6 +138,12 @@
       ],
       "Enable Contact Shadow": [
         "Abilita Ombra di Contatto"
+      ],
+      "Enable Left Light": [
+        "Abilita Luce Sinistra"
+      ],
+      "Enable Right Light": [
+        "Abilita Luce Destra"
       ],
       "Enable Transform": [
         "Abilita Trasformazione"
@@ -139,6 +160,9 @@
       "File Name": [
         "Nome File"
       ],
+      "Floor": [
+        "Pavimento"
+      ],
       "Folder URL": [
         "URL della Cartella"
       ],
@@ -148,8 +172,23 @@
       "Fov": [
         "Focale"
       ],
+      "Front": [
+        "Frontale"
+      ],
+      "Top": [
+        "Sopra"
+      ],
+      "Bottom": [
+        "Sotto"
+      ],
       "Hearth": [
         "Cuore"
+      ],
+      "Height": [
+        "Altezza"
+      ],
+      "Helpers": [
+        "Aiuti"
       ],
       "Import File 3D": [
         "Importa File 3D"
@@ -162,6 +201,15 @@
       ],
       "Interactivity": [
         "Interattività"
+      ],
+      "Left": [
+        "Sinistra"
+      ],
+      "Left Light": [
+        "Luce Sinistra"
+      ],
+      "Left Light Intensity": [
+        "Intensità Luce Sinistra"
       ],
       "Light": [
         "Luce"
@@ -186,6 +234,9 @@
       ],
       "Move Cloud": [
         "Muovi Nuvole"
+      ],
+      "Navigator": [
+        "Navigatore"
       ],
       "Number": [
         "Numero"
@@ -215,13 +266,28 @@
         "Rendering"
       ],
       "Reset Rotation": [
-        "Ristabilisci Rotazione"
+        "Ripristina Rotazione"
+      ],
+      "Reset Position": [
+        "Ripristina Posizione"
+      ],
+      "Right": [
+        "Destra"
+      ],
+      "Right Light": [
+        "Luce Destra"
+      ],
+      "Right Light Intensity": [
+        "Intensità Luce Destra"
       ],
       "Rotation": [
         "Rotazione"
       ],
       "Scale": [
         "Scala"
+      ],
+      "Scroll on Rotation": [
+        "Rotazione allo Scroll"
       ],
       "Select shape": [
         "Seleziona forma"
@@ -238,14 +304,20 @@
       "Speed": [
         "Velocità"
       ],
+      "Spot Light": [
+        "Luce Spot"
+      ],
       "Spot Light Intensity": [
-        "Luce Spot Intensità"
+        "Intensità Luce Spot"
       ],
       "Square": [
         "Quadrato"
       ],
       "Stroke": [
         "Traccia"
+      ],
+      "Target on DubleClick": [
+        "Puntamento al DoppioClick"
       ],
       "Terrain color": [
         "Colore terreno"
@@ -258,6 +330,9 @@
       ],
       "The file name. (without extension)": [
         "Il nome del file. (senza estensione)"
+      ],
+      "These options are only visible in the editor": [
+        "Queste opzioni sono visibili solo nell'editor"
       ],
       "Title": [
         "Titolo"
@@ -327,6 +402,15 @@
       ],
       "This option forces this block to remain fixed in fullscreen below everything.": [
         "Questa opzione forza questo blocco a rimanere fisso a schermo intero sotto ogni cosa."
+      ],
+      "Latitude, Longitude": [
+        "Latitudine, Longitudine"
+      ],
+      "Custom Panorama Image": [
+        "Immagine Panorama Personalizzata"
+      ],
+      "Show Chrome Sphere": [
+        "Mostra la Sfera Cromata"
       ]
     }
   }

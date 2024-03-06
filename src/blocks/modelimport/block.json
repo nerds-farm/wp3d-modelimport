@@ -241,6 +241,34 @@
 			"type": "boolean",
 			"default": false
 		},
+		"nav_left": {
+			"type": "boolean",
+			"default": false
+		},
+		"nav_right": {
+			"type": "boolean",
+			"default": false
+		},
+		"nav_top": {
+			"type": "boolean",
+			"default": false
+		},
+		"nav_bottom": {
+			"type": "boolean",
+			"default": false
+		},
+		"nav_front": {
+			"type": "boolean",
+			"default": false
+		},
+		"nav_back": {
+			"type": "boolean",
+			"default": false
+		},
+		"nav_default": {
+			"type": "boolean",
+			"default": false
+		},
 		"buttons_navigator": {
 			"type": "array",
 			"default": ["left","center","right","back"]

@@ -269,6 +269,14 @@ msgstr "Focale"
 msgid "Front"
 msgstr "Frontale"
 
+#: edit.js
+msgid "Top"
+msgstr "Sopra"
+
+#: edit.js
+msgid "Bottom"
+msgstr "Sotto"
+
 #: point:edit.js
 msgid "Generate Lat/Lng"
 msgstr "Genera Lat/Lng"
@@ -471,7 +479,11 @@ msgstr "Sostituisci"
 
 #: edit.js
 msgid "Reset Rotation"
-msgstr "Ristabilisci Rotazione"
+msgstr "Ripristina Rotazione"
+
+#: edit.js
+msgid "Reset position"
+msgstr "Ripristina Posizione"
 
 #: edit.js
 msgid "Right"
@@ -666,3 +678,15 @@ msgstr "Zoom"
 #: edit.js
 msgid "Zoom on Wheel"
 msgstr "Zoom con rotella"
+
+#: edit.js
+msgid "Latitude, Longitude"
+msgstr ""
+
+#: edit.js
+msgid "Custom Panorama Image"
+msgstr ""
+
+#: edit.js
+msgid "Show Chrome Sphere"
+msgstr ""

@@ -54,9 +54,7 @@ import SkyPanel from '../../components/SkyPanel.js';
 import e_threed_class_modelimport from '../../classes/class.e_threed_modelimport.js';
 import E_threed_class_light from '../../classes/class.e_threed_light.js';
 
-//SHADERS for contactshadow
-import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurShader.js';
-import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader.js';
+
 
 //images
 import previewImage from '../../../assets/img/modelimport_cover.jpg'
@@ -113,6 +111,13 @@ export default function Edit( props ) {
 		helper_rightlight,
 		enable_navigator,
 		buttons_navigator,
+		nav_left,
+		nav_right,
+		nav_top,
+		nav_bottom,
+		nav_front,
+		nav_back,
+		nav_default,
 		sky_transparent,
 		sky_color,
 		sky_showimage,
@@ -428,6 +433,10 @@ export default function Edit( props ) {
 		if(importModel3D_element) importModel3D_element.toFloor();
 		//applyPosCamera(true,{ fov:40, zoom:1, camx:0, camy:0, camz:4 });
     }
+	function showObject(){
+		if(importModel3D_element) importModel3D_element.showObject();
+		
+	}
 	function clickResetPos(){
 		applyPosCamera(true,{ fov:40, zoom:1, camx:0, camy:0, camz:4 });
     }
@@ -435,6 +444,7 @@ export default function Edit( props ) {
 		applyTrgtCamera(true,{ trgtx:0, trgty:0, trgtz:0 });
     }
 	function applyPosCamera($useElementChange = true, $ob ){
+		
 		if($ob){ 
 			onChangeValue("camera_fov",{ camera_fov: $ob.fov }, $useElementChange)
 			onChangeValue("camera_zoom",{ camera_zoom: $ob.zoom }, $useElementChange)
@@ -495,12 +505,7 @@ export default function Edit( props ) {
 					<span className="wp3d-tools-object3d-scale">&nbsp;</span>
 				</div>
 				<div className="wp3d-navigator">
-					<span className="wp3d-nav-left">&nbsp;</span>
-					<span className="wp3d-nav-right">&nbsp;</span>
-					<span className="wp3d-nav-top">&nbsp;</span>
-					<span className="wp3d-nav-front">&nbsp;</span>
-					<span className="wp3d-nav-back">&nbsp;</span>
-					<span className="wp3d-nav-default">&nbsp;</span>
+					
 				</div>
 			</div>
 		</div>
@@ -926,7 +931,8 @@ export default function Edit( props ) {
 					allowReset={true}
 					resetFallbackValue={4}
 				/>
-				<Button variant="primary" onClick={ clickResetPos }>Reset position</Button>
+				<Button variant="primary" onClick={ clickResetPos }>{__('Reset position', 'wp3d-blocks')}</Button>
+				<Button variant="primary" onClick={ showObject }>{__('Show Object', 'wp3d-blocks')}</Button>
 				</div>
 				<div className="components-panel-col">
 				<h3><Icon icon="plus" /> {__('Camera Target', 'wp3d-blocks')}</h3>
@@ -960,7 +966,7 @@ export default function Edit( props ) {
 					allowReset={true}
 					resetFallbackValue={0}
 				/>
-				<Button variant="primary" onClick={ clickResetTrgt }>Reset position</Button>
+				<Button variant="primary" onClick={ clickResetTrgt }>{__('Reset position', 'wp3d-blocks')}</Button>
 				</div>
 			</PanelBody>	
 			<PanelBody 
@@ -1059,7 +1065,41 @@ export default function Edit( props ) {
 			title={ __( 'Navigator', 'wp3d-blocks' )}
 			initialOpen={false}
 			>
-				<h1>TO DO</h1>
+				<ToggleControl
+					label={ __( 'Left', 'wp3d-blocks' )}
+					checked={ nav_left }
+					onChange={ ( val ) => onChangeValue("nav_left",{ nav_left: val }) }
+				/>
+				<ToggleControl
+					label={ __( 'Right', 'wp3d-blocks' )}
+					checked={ nav_right }
+					onChange={ ( val ) => onChangeValue("nav_right",{ nav_right: val }) }
+				/>
+				<ToggleControl
+					label={ __( 'Top', 'wp3d-blocks' )}
+					checked={ nav_top }
+					onChange={ ( val ) => onChangeValue("nav_top",{ nav_top: val }) }
+				/>
+				<ToggleControl
+					label={ __( 'Bottom', 'wp3d-blocks' )}
+					checked={ nav_bottom }
+					onChange={ ( val ) => onChangeValue("nav_bottom",{ nav_bottom: val }) }
+				/>
+				<ToggleControl
+					label={ __( 'Front', 'wp3d-blocks' )}
+					checked={ nav_front }
+					onChange={ ( val ) => onChangeValue("nav_front",{ nav_front: val }) }
+				/>
+				<ToggleControl
+					label={ __( 'Back', 'wp3d-blocks' )}
+					checked={ nav_back }
+					onChange={ ( val ) => onChangeValue("nav_back",{ nav_back: val }) }
+				/>
+				<ToggleControl
+					label={ __( 'Default', 'wp3d-blocks' )}
+					checked={ nav_default }
+					onChange={ ( val ) => onChangeValue("nav_default",{ nav_default: val }) }
+				/>
 			</PanelBody>
 			<ViewportPanel props={props} onChange={onChangeValue} />
 			

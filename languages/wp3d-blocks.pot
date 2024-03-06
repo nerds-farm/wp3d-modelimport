@@ -580,6 +580,10 @@ msgid "Reset Rotation"
 msgstr ""
 
 #: edit.js
+msgid "Reset position"
+msgstr ""
+
+#: edit.js
 msgid "Scale"
 msgstr ""
 
@@ -609,6 +613,14 @@ msgstr ""
 
 #: edit.js
 msgid "Back"
+msgstr ""
+
+#: edit.js
+msgid "Top"
+msgstr ""
+
+#: edit.js
+msgid "Bottom"
 msgstr ""
 
 #: edit.js
@@ -655,3 +667,14 @@ msgstr ""
 msgid "Device Orientation"
 msgstr ""
 
+#: edit.js
+msgid "Latitude, Longitude"
+msgstr ""
+
+#: edit.js
+msgid "Custom Panorama Image"
+msgstr ""
+
+#: edit.js
+msgid "Show Chrome Sphere"
+msgstr ""

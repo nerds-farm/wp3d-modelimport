@@ -16,6 +16,7 @@ import {
     MeshDepthMaterial,
     ShaderMaterial,
     Mesh,
+    BoxGeometry,
     PlaneGeometry,
     Color,
     WebGLRenderer,
@@ -76,6 +77,8 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 //SHADERS for contactshadow
 import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader.js';
+
+import MoveTo from './class.moveTo.js';
 
 class e_threed_class_modelimport {
     constructor($target, $props, $isEditor = true, $cbfn = null) {
@@ -154,6 +157,7 @@ class e_threed_class_modelimport {
         this.loadingManager = new LoadingManager();
         this.nprogress = NProgress();
         this.loadingmessage;
+        this.navigator
 
         //RENDER ANIMATION
         this.clock = new Clock();
@@ -188,6 +192,8 @@ class e_threed_class_modelimport {
         this.add_modelimport(this.id_scope, $props);
 
 
+
+
     }
     // ------------ DATA -------------
     // getRepeater($scope){
@@ -209,6 +215,7 @@ class e_threed_class_modelimport {
 
         this.nprogress.configure({ parent: '#'+this.id_scope });
         this.loadingmessage = jQuery('#'+this.id_scope).find('.wp3d-loading-message');
+        this.navigator = jQuery('#'+this.id_scope).find('.wp3d-navigator');
 
         //RENDERER
         this.outputEncoding = this.elementSettings.renderer_outputEncoding || 'sRGBEncoding';
@@ -303,6 +310,16 @@ class e_threed_class_modelimport {
         this.leftLightHelper = null;
         this.rightLeftHelper = null;
 
+        // NAVIGATOR
+        this.isNavigatorLeft = Boolean(this.elementSettings.nav_left);
+        this.isNavigatorRight = Boolean(this.elementSettings.nav_right);
+        this.isNavigatorTop = Boolean(this.elementSettings.nav_top);
+        this.isNavigatorBottom = Boolean(this.elementSettings.nav_bottom);
+        this.isNavigatorFront = Boolean(this.elementSettings.nav_front);
+        this.isNavigatorBack = Boolean(this.elementSettings.nav_back);
+        this.isNavigatorDefault = Boolean(this.elementSettings.nav_default);
+
+
         //SKY
         this.skyType = this.elementSettings.sky_type; // stars, transparent, backgroundcolor, image
         this.ambientSkyTransparent = Boolean(this.elementSettings.sky_transparent);
@@ -337,6 +354,7 @@ class e_threed_class_modelimport {
         //CONTACT SHAWOW
         this.isContactShadow = Boolean(this.elementSettings.enableContactshadow);
         if(this.isContactShadow) this.initContactShadow()
+
         
     }
     genPath(cb = null){
@@ -409,8 +427,8 @@ class e_threed_class_modelimport {
 
                 /////////////////
                 this.addModel();
+                //this.addCube();
                 /////////////////
-                
                 
                 
             
@@ -535,7 +553,8 @@ class e_threed_class_modelimport {
         this.addContactShadow();
 
 
-        
+        //MoveTo Instance
+        this.moveTo = new MoveTo(this, this.elementSettings);
 
         
 
@@ -560,6 +579,7 @@ class e_threed_class_modelimport {
                 this.triggerHandler('startControls');
             } );
             this.controls.addEventListener( 'end', () => {
+                
                 this.triggerHandler('endControls');
             } );
         }
@@ -927,6 +947,15 @@ class e_threed_class_modelimport {
     }
     
     // MODEL ************
+    addCube(){
+        const geometry = new BoxGeometry( 1, 1, 1 ); 
+        const material = new MeshBasicMaterial( {color: 0xCCCCCC} ); 
+        const cube = new Mesh( geometry, material ); 
+        //this.scene.add( cube );
+        this.themodel.add(cube);
+
+        if(this.cbfn) this.cbfn(this);
+    }
     addModel($fromUpdate = false){
         
        
@@ -936,28 +965,27 @@ class e_threed_class_modelimport {
         this.import_model(this.importFormatType, (ob) => {
             if(!ob) return;
 
-            //alert('the model '+this.id_scope+' is imported')
-            
-            //console.log('modelScene',this.scene);
-            //Lights
+            // LIGHTS
             this.addLight()
             
-            //GLOW-LIGHT
+            // GLOW-LIGHT
             //addGlowLight();
             
-            //
-            //alert(this.enableTransform)
+            // TRANSFORMS
             if(this.enableTransform){
                 this.changeTransformControl(ob);
                 this.showTools();
             }
-            //console.log('The Model:',ob);
-            
+           
+            // HELPERS
             if(this.isEditor){
                 this.updateHelpers();
             }
 
-            //
+            // NAVIGATOR
+            this.updateNavigator()
+
+            // GOOOOOOO
             setTimeout(()=>{
                 if(this.nprogress) this.nprogress.done();
                 //this.nprogress.remove();
@@ -996,9 +1024,97 @@ class e_threed_class_modelimport {
         this.addModel(true);
     }
     
+    // NAVIGATOR
+    updateNavigator(){
+        this.navigator.empty();
+
+        // this.isNavigatorLeft = Boolean(this.elementSettings.nav_left);
+        // this.isNavigatorRight = Boolean(this.elementSettings.nav_right);
+        // this.isNavigatorTop = Boolean(this.elementSettings.nav_top);
+        // this.isNavigatorBottom = Boolean(this.elementSettings.nav_bottom);
+        // this.isNavigatorFront = Boolean(this.elementSettings.nav_front);
+        // this.isNavigatorBack = Boolean(this.elementSettings.nav_back);
+        // this.isNavigatorDefault = Boolean(this.elementSettings.nav_default);
+
+        // LEFT
+        if(this.isNavigatorLeft){
+            this.navigator.append('<span class="wp3d-nav-left">&nbsp;</span>');
+            this.navigator.find('.wp3d-nav-left').on('pointerdown',() => {
+                
+                this.moveTo.left();
+            })
+        }else{
+            this.navigator.find('.wp3d-nav-left').off('pointerdown');
+            this.navigator.find('.wp3d-nav-left').remove();
+        }
+        // TOP
+        if(this.isNavigatorTop){
+            this.navigator.append('<span class="wp3d-nav-top">&nbsp;</span>');
+            this.navigator.find('.wp3d-nav-top').on('pointerdown',() => {
+                this.moveTo.top();
+            })
+        }else{
+            this.navigator.find('.wp3d-nav-top').off('pointerdown');
+            this.navigator.find('.wp3d-nav-top').remove();
+        }
+        // FRONT
+        if(this.isNavigatorFront){
+            this.navigator.append('<span class="wp3d-nav-front">&nbsp;</span>');
+            this.navigator.find('.wp3d-nav-front').on('pointerdown',() => {
+                this.moveTo.front();
+            })
+        }else{
+            this.navigator.find('.wp3d-nav-front').off('pointerdown');
+            this.navigator.find('.wp3d-nav-front').remove();
+        }
+        // DEFAULT
+        if(this.isNavigatorDefault){
+            this.navigator.append('<span class="wp3d-nav-default">&nbsp;</span>');
+            this.navigator.find('.wp3d-nav-default').on('pointerdown',() => {
+                this.moveTo.default();
+            })
+        }else{
+            this.navigator.find('.wp3d-nav-default').off('pointerdown');
+            this.navigator.find('.wp3d-nav-default').remove();
+        }
+         // BACK
+         if(this.isNavigatorBack){
+            this.navigator.append('<span class="wp3d-nav-back">&nbsp;</span>');
+            this.navigator.find('.wp3d-nav-back').on('pointerdown',() => {
+                this.moveTo.back();
+            })
+        }else{
+            this.navigator.find('.wp3d-nav-back').off('pointerdown');
+            this.navigator.find('.wp3d-nav-back').remove();
+        }
+        // BOTTOM
+        if(this.isNavigatorBottom){
+            this.navigator.append('<span class="wp3d-nav-bottom">&nbsp;</span>');
+            this.navigator.find('.wp3d-nav-bottom').on('pointerdown',() => {
+                this.moveTo.bottom();
+            })
+        }else{
+            this.navigator.find('.wp3d-nav-bottom').off('pointerdown');
+            this.navigator.find('.wp3d-nav-bottom').remove();
+        }
+        // RIGHT
+        if(this.isNavigatorRight){
+            this.navigator.append('<span class="wp3d-nav-right">&nbsp;</span>');
+            this.navigator.find('.wp3d-nav-right').on('pointerdown',() => {
+                this.moveTo.right();
+            })
+        }else{
+            this.navigator.find('.wp3d-nav-right').off('pointerdown');
+            this.navigator.find('.wp3d-nav-right').remove();
+        }
+        
+    }
+
+    // HELPERS
     updateHelpers(){
-       console.log('HelpLight',this.isHelperSpotLight);
-       console.log(this.scene)
+        // console.log('HelpLight',this.isHelperSpotLight);
+        // console.log(this.scene)
+
         // Center Helper
         if(this.isHelperCenter){
             if(!this.axesHelper){
@@ -1711,19 +1827,7 @@ class e_threed_class_modelimport {
     }
 
 
-    //------------ LAT/LNG UTILITY -----------------
-    calcPosFromLatLonRad(lat,lon,radius){
-  
-        var phi   = (90-lat)*(Math.PI/180);
-        var theta = (lon-180)*(Math.PI/180);
     
-        let x = -(radius * Math.sin(phi)*Math.cos(theta));
-        let z = (radius * Math.sin(phi)*Math.sin(theta));
-        let y = (radius * Math.cos(phi));
-      
-        return [x,y,z];
-    
-    }
     //------------ UTILITY ----------------
     scaleInScene(model){
         const box = new Box3().setFromObject(model);
@@ -1787,6 +1891,13 @@ class e_threed_class_modelimport {
         bbox.getCenter(cent);
         obj.position.copy(cent).multiplyScalar((dim/2)*-1);
         
+    }
+    
+    showObject(){
+        const ob =this.moveTo.getCamPos();
+        const obStr = JSON.stringify(this.moveTo.getCamPos());
+        alert(obStr)
+        console.log('OB',ob)
     }
     toFloor(){
         
@@ -2400,8 +2511,36 @@ class e_threed_class_modelimport {
             this.render();
         }
 
-
-
+        // NAVIGATOR -------------------------------------- 
+        if ('nav_left' === propertyName) {
+            this.isNavigatorLeft = Boolean(this.elementSettings.nav_left);
+            this.updateNavigator();
+        }
+        if ('nav_right' === propertyName) {
+            this.isNavigatorRight = Boolean(this.elementSettings.nav_right);
+            this.updateNavigator();
+        }
+        if ('nav_top' === propertyName) {
+            this.isNavigatorTop = Boolean(this.elementSettings.nav_top);
+            this.updateNavigator();
+        }
+        if ('nav_bottom' === propertyName) {
+            this.isNavigatorBottom = Boolean(this.elementSettings.nav_bottom);
+            this.updateNavigator();
+        }
+        if ('nav_front' === propertyName) {
+            this.isNavigatorFront = Boolean(this.elementSettings.nav_front);
+            this.updateNavigator();
+        }
+        if ('nav_back' === propertyName) {
+            this.isNavigatorBack = Boolean(this.elementSettings.nav_back);
+            this.updateNavigator();
+        }
+        if ('nav_default' === propertyName) {
+            this.isNavigatorDefault = Boolean(this.elementSettings.nav_default);
+            this.updateNavigator();
+        }
+        
         // VIEWPORT -------------------------------------- 
         if ('viewport_ratio' === propertyName) {
             this.viewportRatio = this.elementSettings.viewport_ratio;
