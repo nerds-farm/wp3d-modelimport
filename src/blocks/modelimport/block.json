@@ -217,6 +217,10 @@
 			"type": "array",
 			"default": ["center","floor","spotlight","leftlight","rightlight"]
 		},
+		"helper_box": {
+			"type": "boolean",
+			"default": false
+		},
 		"helper_center": {
 			"type": "boolean",
 			"default": false

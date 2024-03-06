@@ -23,7 +23,7 @@ import {
     LoadingManager,
     AnimationMixer,
     Plane,
-    BoxHelper,
+
     Clock,
 
     PMREMGenerator,
@@ -57,7 +57,8 @@ import {
     PointLightHelper,
     DirectionalLightHelper,
     SpotLightHelper,
-    CameraHelper
+    CameraHelper,
+    BoxHelper
 
 } from 'three';
 
@@ -189,8 +190,6 @@ class e_threed_class_modelimport {
         this.ambobj_h = 5;
         this.ambobj_d = 5;
         
-        //MOVETO
-        this.isMoved = false;
         // ------------
         this.add_modelimport(this.id_scope, $props);
 
@@ -225,12 +224,11 @@ class e_threed_class_modelimport {
         this.toneMapping = this.elementSettings.renderer_toneMapping || 'NoToneMapping';
         this.toneMappingExposure = this.elementSettings.renderer_toneMapping_exposure || 0.68;
 
-        
-
         //GLOW-LIGHT
         this.glowLight;
         this.glowlightHelper;
 
+        
         // SHADOWS
         this.isShadows = true; //Boolean(this.elementSettings.enable_shadows);
         this.shadowType = this.elementSettings.shadow_type || 'PCFSoftShadowMap';
@@ -301,17 +299,23 @@ class e_threed_class_modelimport {
         this.rightcameraLight = null;
 
         //HELPERS
+        this.isHelperBox = Boolean(this.elementSettings.helper_box);
         this.isHelperCenter = Boolean(this.elementSettings.helper_center);
         this.isHelperFloor = Boolean(this.elementSettings.helper_floor);
         this.isHelperSpotLight = Boolean(this.elementSettings.helper_spotlight);
         this.isHelperLeftLight = Boolean(this.elementSettings.helper_leftlight); //sospeso
         this.isHelperRightLight = Boolean(this.elementSettings.helper_rightlight); //sospeso
+        this.isBoxHelper = Boolean(this.elementSettings.helper_box);
 
         this.axesHelper = null;
         this.gridHelper = null;
         this.spotHelper = null;
         this.leftLightHelper = null;
         this.rightLeftHelper = null;
+        
+        //BOXHELPER
+        this.boxHelper = null;
+
 
         // NAVIGATOR
         this.isNavigatorLeft = Boolean(this.elementSettings.nav_left);
@@ -1118,6 +1122,19 @@ class e_threed_class_modelimport {
         // console.log('HelpLight',this.isHelperSpotLight);
         // console.log(this.scene)
 
+        // Box Helper
+        if(this.isHelperBox){
+            if(!this.boxHelper){
+            this.boxHelper = new BoxHelper( this.themodel, 0x0098c7 );
+            this.scene.add( this.boxHelper );
+            }
+        }else{
+            if(this.boxHelper){
+                this.scene.remove( this.boxHelper );
+                this.boxHelper.dispose();
+                this.boxHelper = null;
+            }
+        }
         // Center Helper
         if(this.isHelperCenter){
             if(!this.axesHelper){
@@ -1897,10 +1914,9 @@ class e_threed_class_modelimport {
     }
     
     showObject(){
-        const ob =this.moveTo.getCamPos();
         const obStr = JSON.stringify(this.moveTo.getCamPos());
         alert(obStr)
-        console.log('OB',ob)
+        //console.log('OB',ob)
     }
     toFloor(){
         
@@ -2278,6 +2294,10 @@ class e_threed_class_modelimport {
         }
 
         // HELPERS --------------------------------------
+        if ('helper_box' === propertyName) {
+            this.isHelperBox = Boolean(this.elementSettings.helper_box);
+            this.updateHelpers();
+        }
         if ('helper_center' === propertyName) {
             this.isHelperCenter = Boolean(this.elementSettings.helper_center);
             this.updateHelpers();
@@ -2385,6 +2405,7 @@ class e_threed_class_modelimport {
 
             this.camera.updateProjectionMatrix();
             this.render();
+            this.moveTo.change(); // Tricks
         }
         if ('camera_zoom' === propertyName) {
             this.cameraZoom = this.elementSettings.camera_zoom ? this.elementSettings.camera_zoom : 1;
@@ -2392,6 +2413,7 @@ class e_threed_class_modelimport {
 
             this.camera.updateProjectionMatrix();
             this.render();
+            this.moveTo.change(); // Tricks
         }
 
         // CAMERA position: x-y-z
@@ -2402,6 +2424,7 @@ class e_threed_class_modelimport {
             
             this.camera.updateProjectionMatrix();
             this.render();
+            this.moveTo.change(); // Tricks
         }
         if ('camera_posy' === propertyName) {
             this.cameraPosY = this.elementSettings.camera_posy ? this.elementSettings.camera_posy : 0;
@@ -2409,6 +2432,7 @@ class e_threed_class_modelimport {
 
             this.camera.updateProjectionMatrix();
             this.render();
+            this.moveTo.change(); // Tricks
         }
         if ('camera_posz' === propertyName) {
             this.cameraPosZ = this.elementSettings.camera_posz ? this.elementSettings.camera_posz : 20;
@@ -2416,6 +2440,7 @@ class e_threed_class_modelimport {
 
             this.camera.updateProjectionMatrix();
             this.render();
+            this.moveTo.change(); // Tricks
         }
 
         // TARGET x-y-z
@@ -2430,6 +2455,7 @@ class e_threed_class_modelimport {
 
             this.camera.updateProjectionMatrix();
             this.render();
+            this.moveTo.change(); // Tricks
         }
         if ('camera_targety' === propertyName) {
             this.cameraTargetY = this.elementSettings.camera_targety ? this.elementSettings.camera_targety : 0;
@@ -2441,6 +2467,7 @@ class e_threed_class_modelimport {
 
             this.camera.updateProjectionMatrix();
             this.render();
+            this.moveTo.change(); // Tricks
         }
         if ('camera_targetz' === propertyName) {
             this.cameraTargetZ = this.elementSettings.camera_targetz ? this.elementSettings.camera_targetz : 0;
@@ -2452,6 +2479,7 @@ class e_threed_class_modelimport {
 
             this.camera.updateProjectionMatrix();
             this.render();
+            this.moveTo.change(); // Tricks
             
         }
 
@@ -2558,7 +2586,6 @@ class e_threed_class_modelimport {
             this.viewportIsExtend = Boolean(this.elementSettings.viewport_fixed);
 
         }
-
 
     }
 }

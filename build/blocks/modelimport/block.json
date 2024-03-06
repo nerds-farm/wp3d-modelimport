@@ -232,6 +232,10 @@
         "rightlight"
       ]
     },
+    "helper_box": {
+      "type": "boolean",
+      "default": false
+    },
     "helper_center": {
       "type": "boolean",
       "default": false

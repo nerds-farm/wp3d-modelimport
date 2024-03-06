@@ -104,6 +104,7 @@ export default function Edit( props ) {
 		leftspot_intensity,
 		rightspot_intensity,
 		helpers,
+		helper_box,
 		helper_center,
 		helper_floor,
 		helper_spotlight,
@@ -442,12 +443,11 @@ export default function Edit( props ) {
 		if(importModel3D_element) importModel3D_element.showObject();
 		
 	}
-	function clickResetPos(){
+	function clickReset(){
 		applyPosCamera(true,{ fov:40, zoom:1, camx:0, camy:0, camz:4 });
-    }
-	function clickResetTrgt(){
 		applyTrgtCamera(true,{ trgtx:0, trgty:0, trgtz:0 });
     }
+	
 	function applyPosCamera($useElementChange = true, $ob ){
 		
 		if($ob){ 
@@ -934,7 +934,7 @@ export default function Edit( props ) {
 					allowReset={true}
 					resetFallbackValue={4}
 				/>
-				<Button variant="primary" onClick={ clickResetPos }>{__('Reset position', 'wp3d-blocks')}</Button>
+				<Button variant="primary" onClick={ clickReset }>{__('Reset position', 'wp3d-blocks')}</Button>
 				<Button variant="primary" onClick={ showObject }>{__('Show Object', 'wp3d-blocks')}</Button>
 				</div>
 				<div className="components-panel-col">
@@ -969,7 +969,7 @@ export default function Edit( props ) {
 					allowReset={true}
 					resetFallbackValue={0}
 				/>
-				<Button variant="primary" onClick={ clickResetTrgt }>{__('Reset position', 'wp3d-blocks')}</Button>
+				<Button variant="primary" onClick={ clickReset }>{__('Reset position', 'wp3d-blocks')}</Button>
 				</div>
 			</PanelBody>	
 			<PanelBody 
@@ -1111,6 +1111,11 @@ export default function Edit( props ) {
 				initialOpen={false}
 				>
 				<p>{ __( 'These options are only visible in the editor', 'wp3d-blocks' )}</p>
+				<ToggleControl
+					label={ __( 'Box', 'wp3d-blocks' )}
+					checked={ helper_box }
+					onChange={ ( val ) => onChangeValue("helper_box",{ helper_box: val }) }
+				/>
 				<ToggleControl
 					label={ __( 'Center', 'wp3d-blocks' )}
 					checked={ helper_center }

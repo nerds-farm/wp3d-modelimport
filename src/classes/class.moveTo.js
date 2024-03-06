@@ -15,7 +15,7 @@ export class MoveTo {
         this.renderer = $this.renderer;
         this.object3d = $this.theModel;
         this.camera = $this.camera;
-        this.isMoved = $this.isMoved;
+        this.isMoved = false;
 
         this.controls = $this.controls;
         this.target = this.controls.target;
@@ -43,6 +43,7 @@ export class MoveTo {
         $this.on('startControls', () => {
             //this.tlMoveTo.paused(true).pause();
         })
+        
     }
     init(){
         
@@ -223,9 +224,12 @@ export class MoveTo {
     
     }
     
-
+    update(){
+        this.defaultData = this.getCamPos();
+    }
     change(propertyName, settings){
         this.settings = settings;
+        
     }
 }
 export default MoveTo;
