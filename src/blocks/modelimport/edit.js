@@ -226,8 +226,12 @@ export default function Edit( props ) {
 			const posCam = $this.getCamPos()
 			const posObj = $this.getObjPos()
 			//console.log(posCam);
+			if(!$this.isMoved)
 			applyPosCamera(false, posCam);
+
 			applyTransform(false, posObj);			
+			
+			
 		});
 		$this.on('changeControls',()=>{
 			
@@ -236,6 +240,7 @@ export default function Edit( props ) {
 			const posCam = $this.getCamPos()
 			
 			//console.log('endControls', $ob);
+			if(!$this.isMoved)
 			applyPosCamera(false, posCam);
 			
 		});

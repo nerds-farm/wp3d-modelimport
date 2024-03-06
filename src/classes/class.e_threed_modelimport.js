@@ -183,11 +183,14 @@ class e_threed_class_modelimport {
         this.groundY = 0;
         this.default_ambientPosY = this.groundY;
         this.ambientPosY = -1;
+        
         //AMBIENT
         this.ambobj_w = 5;
         this.ambobj_h = 5;
         this.ambobj_d = 5;
         
+        //MOVETO
+        this.isMoved = false;
         // ------------
         this.add_modelimport(this.id_scope, $props);
 

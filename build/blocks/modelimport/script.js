@@ -138,11 +138,14 @@ class e_threed_class_modelimport {
     this.groundY = 0;
     this.default_ambientPosY = this.groundY;
     this.ambientPosY = -1;
+
     //AMBIENT
     this.ambobj_w = 5;
     this.ambobj_h = 5;
     this.ambobj_d = 5;
 
+    //MOVETO
+    this.isMoved = false;
     // ------------
     this.add_modelimport(this.id_scope, $props);
   }
@@ -2223,12 +2226,14 @@ __webpack_require__.r(__webpack_exports__);
 
 class MoveTo {
   constructor($this, $props) {
-    console.log('props', $props);
-    console.log('this', $this);
+    // console.log('props',$props);
+    // console.log('this',$this);
+
     this.scene = $this.scene;
     this.renderer = $this.renderer;
     this.object3d = $this.theModel;
     this.camera = $this.camera;
+    this.isMoved = $this.isMoved;
     this.controls = $this.controls;
     this.target = this.controls.target;
     this.settings = $props;
@@ -2378,6 +2383,12 @@ class MoveTo {
         //console.log(p[0],p[1],p[2])
       },
 
+      onComplete: () => {
+        this.isMoved = false;
+      },
+      onStart: () => {
+        this.isMoved = true;
+      },
       ease: this.tweenease
     });
     this.tlMoveTo.play();

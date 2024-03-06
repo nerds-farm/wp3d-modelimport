@@ -8,13 +8,14 @@ import { gsap } from "gsap";
 
 export class MoveTo {
     constructor($this, $props) {
-        console.log('props',$props);
-        console.log('this',$this);
+        // console.log('props',$props);
+        // console.log('this',$this);
 
         this.scene = $this.scene;
         this.renderer = $this.renderer;
         this.object3d = $this.theModel;
         this.camera = $this.camera;
+        this.isMoved = $this.isMoved;
 
         this.controls = $this.controls;
         this.target = this.controls.target;
@@ -106,6 +107,12 @@ export class MoveTo {
                 this.camera.fov = self.fov;
                 this.camera.zoom = self.zoom;
                 //console.log(p[0],p[1],p[2])
+            },
+            onComplete: () => {
+                this.isMoved = false;
+            },
+            onStart: () => {
+                this.isMoved = true;
             },
             ease: this.tweenease
         });
