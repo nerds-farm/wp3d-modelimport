@@ -33,6 +33,7 @@ export default function save( { attributes, style } ) {
 		<div className="wp3d-container wp3d-importmodel-container" style={h}>
 			<canvas id={ `canvas-${ attributes.ide }` } className="wp3d-canvas threed-canvas"></canvas>
 			<div className="wp3d-loading-message"></div>
+			<div className="wp3d-navigator"></div>
 		</div>
 		<div className="wp3d-blocks-list">
 			<InnerBlocks.Content />

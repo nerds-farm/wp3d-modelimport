@@ -509,9 +509,7 @@ export default function Edit( props ) {
 					<span className="wp3d-tools-object3d-rot">&nbsp;</span>
 					<span className="wp3d-tools-object3d-scale">&nbsp;</span>
 				</div>
-				<div className="wp3d-navigator">
-					
-				</div>
+				<div className="wp3d-navigator"></div>
 			</div>
 		</div>
 		
