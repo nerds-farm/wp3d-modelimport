@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'wp3d';
-  src: url('../font/wp3d.eot?43532805');
-  src: url('../font/wp3d.eot?43532805#iefix') format('embedded-opentype'),
-       url('../font/wp3d.woff2?43532805') format('woff2'),
-       url('../font/wp3d.woff?43532805') format('woff'),
-       url('../font/wp3d.ttf?43532805') format('truetype'),
-       url('../font/wp3d.svg?43532805#wp3d') format('svg');
+  src: url('../font/wp3d.eot?91356438');
+  src: url('../font/wp3d.eot?91356438#iefix') format('embedded-opentype'),
+       url('../font/wp3d.woff2?91356438') format('woff2'),
+       url('../font/wp3d.woff?91356438') format('woff'),
+       url('../font/wp3d.ttf?91356438') format('truetype'),
+       url('../font/wp3d.svg?91356438#wp3d') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'wp3d';
-    src: url('../font/wp3d.svg?43532805#wp3d') format('svg');
+    src: url('../font/wp3d.svg?91356438#wp3d') format('svg');
   }
 }
 */
@@ -60,6 +60,7 @@
   font-size: 2em;
   vertical-align: middle;
 }
+
 .dashicons-wp3d-wp3d:before { content: '\e800'; } /* '' */
 .dashicons-light-wp3d:before { content: '\e801'; } /* '' */
 .dashicons-object-wp3d:before { content: '\e802'; } /* '' */
@@ -71,21 +72,30 @@
 .dashicons-logo-nerdsfarm-wp3d:before { content: '\e808'; } /* '' */
 .dashicons-points-wp3d:before { content: '\e809'; } /* '' */
 .dashicons-actions-wp3d:before { content: '\e80a'; } /* '' */
+.dashicons-alpha-wp3d:before { content: '\e80b'; } /* '' */
+.dashicons-position-wp3d:before { content: '\e80c'; } /* '' */
 .dashicons-shader-wp3d:before { content: '\e80d'; } /* '' */
 .dashicons-typography-wp3d:before { content: '\e80e'; } /* '' */
-.dashicons-vrview-wp3d:before { content: '\e80f'; } /* '' */
-.dashicons-ambient-wp3d:before { content: '\e810'; } /* '' */
-.dashicons-depthfocus-wp3d:before { content: '\e811'; } /* '' */
-
-.dashicons-ic_rotate-wp3d:before { content: '\e812'; } /* '' */
-.dashicons-ic_scale-wp3d:before { content: '\e813'; } /* '' */
-.dashicons-ic_alpha-wp3d:before { content: '\e80b'; } /* '' */
-.dashicons-ic_position-wp3d:before { content: '\e80c'; } /* '' */
-
+.dashicons-vr-wp3d:before { content: '\e80f'; } /* '' */
+.dashicons-anbient-wp3d:before { content: '\e810'; } /* '' */
+.dashicons-depth-focus-wp3d:before { content: '\e811'; } /* '' */
+.dashicons-rotate-wp3d:before { content: '\e812'; } /* '' */
+.dashicons-scale-wp3d:before { content: '\e813'; } /* '' */
 .dashicons-group-wp3d:before { content: '\e814'; } /* '' */
 .dashicons-street-wp3d:before { content: '\e815'; } /* '' */
-.dashicons-street-1-wp3d:before { content: '\e817'; } /* '' */
 .dashicons-earth-wp3d:before { content: '\e816'; } /* '' */
+.dashicons-street-1-wp3d:before { content: '\e817'; } /* '' */
 .dashicons-point-wp3d:before { content: '\e818'; } /* '' */
+.dashicons-sticker-wp3d:before { content: '\e819'; } /* '' */
 .dashicons-modelimport-wp3d:before { content: '\e81a'; } /* '' */
 .dashicons-svgextrusion-wp3d:before { content: '\e81b'; } /* '' */
+.dashicons-contactshadow-wp3d:before { content: '\e821'; } /* '' */
+.dashicons-transform1-wp3d:before { content: '\e823'; } /* '' */
+.dashicons-shadows-wp3d:before { content: '\e824'; } /* '' */
+.dashicons-sky-wp3d:before { content: '\e825'; } /* '' */
+.dashicons-mousewheel-wp3d:before { content: '\e826'; } /* '' */
+.dashicons-transform-wp3d:before { content: '\e827'; } /* '' */
+.dashicons-cursormove-wp3d:before { content: '\e828'; } /* '' */
+.dashicons-controls-wp3d:before { content: '\e82a'; } /* '' */
+.dashicons-deviceorientation-wp3d:before { content: '\e82b'; } /* '' */
+.dashicons-ar-wp3d:before { content: '\e82c'; } /* '' */

@@ -2,15 +2,9 @@ import { __ } from '@wordpress/i18n';
 
 import { useState, useEffect, useRef, Fragment } from '@wordpress/element';
 import {
-	TextControl,
-	TextareaControl,
 	PanelBody,
 	SelectControl,
-	PanelRow,
-	RangeControl,
 	ToggleControl,
-	Icon,
-	Button,
 	__experimentalUnitControl as UnitControl
 } from '@wordpress/components'
 

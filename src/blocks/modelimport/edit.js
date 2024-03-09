@@ -13,6 +13,7 @@ import { __ } from '@wordpress/i18n';
  * @see https://developer.wordpress.org/block-editor/packages/packages-components/
  */
 import { 
+	TabPanel,
 	TextControl,
 	PanelBody,
 	SelectControl,
@@ -24,11 +25,16 @@ import {
 	Icon,
 	Button,
 	FormTokenField,
+	ToolbarDropdownMenu,
+    ToolbarGroup,
+	Toolbar, 
+	ToolbarButton,
 	__experimentalToggleGroupControl as ToggleGroupControl,
     __experimentalToggleGroupControlOption as ToggleGroupControlOption,
 	NavigableMenu,
 	TabbableContainer,
-	__experimentalNumberControl as NumberControl
+	__experimentalNumberControl as NumberControl,
+	__experimentalDivider as Divider
 } from '@wordpress/components';
 
 /**
@@ -37,13 +43,15 @@ import {
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { InnerBlocks, useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps, useInnerBlocksProps, InspectorControls, BlockControls } from '@wordpress/block-editor';
 
 import { useDispatch, useSelect } from '@wordpress/data'; //??????
 import { useState, useEffect, useRef, Fragment } from '@wordpress/element';
 import { useInstanceId, useFocusReturn } from "@wordpress/compose";
 
 // My components
+import Locations from './edit.locations.js';
+
 import ChooseModel3d from '../../components/ChooseModel3d.js';
 import ChooseImage from '../../components/ChooseImage.js';
 
@@ -60,6 +68,10 @@ import E_threed_class_light from '../../classes/class.e_threed_light.js';
 import previewImage from '../../../assets/img/modelimport_cover.jpg'
 
 import Appender from '../../components/Appender.js';
+
+//icons
+import { edit, arrowDown, search, move } from '@wordpress/icons';
+
 /**
  * The edit function describes the structure of your block in the context of the
  * editor. This represents what the editor will render when the block is used.
@@ -79,18 +91,27 @@ export default function Edit( props ) {
 	
 	const [ light3D_element, setLight3D_element ] = useState( null );
 	const [ points3D_element, setPoints3D_element ] = useState( null );
-	const [ selectedHelpers, setSelectedHelpers ] = useState( [] );
+	
+	const [ selectedNavigator, setSelectedNavigator ] = useState( false );
+	const [ selectedViewport, setSelectedViewport ] = useState( false );
+	const [ selectedHelpers, setSelectedHelpers ] = useState( false );
+	const [ selectedCS, setSelectedCS ] = useState( false );
+	const [ selectedShadows, setSelectedShadows ] = useState( false );
+	const [ selectedCamera, setSelectedCamera ] = useState( false );
 
 	const [ oldIde, setOldIde ] = useState( [] );
 	const [ newIde, setNewIde ] = useState( [] );
 
 	const blockProps = useBlockProps();
+    const innerBlocksProps = useInnerBlocksProps();
 
 	const instanceId = useInstanceId(Edit);
 
 	const scopeRef = useRef();
 	const canvasRef = useRef();
 	const itemsRef = useRef();
+	const lightsRef = useRef();
+	const pointsRef = useRef();
 	
 	const { attributes, setAttributes, clientId } = props;
 
@@ -103,6 +124,7 @@ export default function Edit( props ) {
 		spot_intensity,
 		leftspot_intensity,
 		rightspot_intensity,
+		enableHelpers,
 		helpers,
 		helper_box,
 		helper_center,
@@ -388,6 +410,12 @@ export default function Edit( props ) {
 	const appendBlock = () => {
 		//....
 	}
+	const appendBlockLights = () => {
+		//....
+	}
+	const appendBlockPoints = () => {
+		//....
+	}
 	 
 	
 	// --------
@@ -485,9 +513,65 @@ export default function Edit( props ) {
 
 	
 	const ALLOWED_BLOCKS = []
-
+	const MI_TEMPLATE = [
+		[ 'wp3d/model-points3d', {} ],
+		[ 'wp3d/model-lights3d', {} ],
+	];
 	const h = viewport_ratio == "custom" ? {height: viewport_height} : {};
 	
+
+	// *******************************************************************
+	//								TABS
+	// *******************************************************************
+	const TabObject = () => {
+		return <></>
+	}
+	const TabTransform = () => {
+		return <></>
+	}
+	const TabInteractivity = () => {
+		return <></>
+	}
+	const TabScene = () => {
+		return <></>
+	}
+	const TabOptions = () => {
+		return <></>
+	}
+	const TabSky = () => {
+		return <></>
+	}
+	const TabLight = () => {
+		return <></>
+	}
+	const onSelect = ( tabName ) => {
+		console.log( 'Selecting tab', tabName );
+		switch(tabName){
+			case 'tabObject':
+				
+			break;
+			case 'tabScene':
+				
+			break;
+			case 'tabOptions':
+				
+			break;
+			case 'tabSky':
+				
+			break;
+			case 'tabLight':
+				
+			break;
+			case 'tabTransform':
+				
+			break;
+			case 'tabInteractions':
+				
+			break;
+		}
+	};
+	// ******************************************************
+
 	if ( preview ) {
 		return(
 			<Fragment>
@@ -533,640 +617,766 @@ export default function Edit( props ) {
 
 			</div>
 			)} */}
-			<div className="wp3d-blocks-list">
+			<div id={`wp3d-modelimport-list-${clientId}-panel`} className="wp3d-blocks-list wp3d-modelimport-list">	
 				<InnerBlocks
-					className="wp3d-innerblock"
+					className="wp3d-innerblock wp3d-modelimport-innerblock"
 					ref={ itemsRef } 
+					templateLock="insert"
+					// defaultBlock={['wp3d/model-points3d','wp3d/model-lights3d']} 
+					// directInsert
 					//orientation='horizontal'
 					__experimentalCaptureToolbars={ true }
 					//template={onChangeLights(light3D_element)}
-					//template={ getCount( countLight ) }
+					template={ MI_TEMPLATE }
 					templateInsertUpdatesSelection={true} 
 					allowedBlocks={ ALLOWED_BLOCKS } 
 					renderAppender={ () => (
-						<Appender label="Add" onAppend={ appendBlock } selectedBlockId={selectedBlockId} rootClientId={ clientId } ide={ide} itemRef={itemsRef} />
+						<Appender label="Add Elements" onAppend={ appendBlock } selectedBlockId={selectedBlockId} rootClientId={ clientId } ide={ide} itemRef={itemsRef} />
 					) }
 				/>
 			</div>
 		</div>
-
+		<BlockControls>
+            <ToolbarGroup>
+				<ToolbarButton
+                    icon={ <Icon icon="transform1-wp3d" /> }
+                    label={ __( 'Enable Transform', 'wp3d-blocks' )}
+					isPressed={ enableTransform }
+                    onClick={ () => {
+						//setAttributes( {  onoff: ! onoff } )
+						//console.log(onoff,attributes.onoff)
+						onChangeValue("enableTransform",{ enableTransform: ! enableTransform })
+					} }
+                />
+                <ToolbarButton
+                    icon={ <Icon icon="mousewheel-wp3d" /> }
+                    label={ __( 'Zoom on Wheel', 'wp3d-blocks' )}
+					isPressed={ useZoom }
+                    onClick={ () => {
+						//setAttributes( {  onoff: ! onoff } )
+						//console.log(onoff,attributes.onoff)
+						onChangeValue("useZoom",{ useZoom: ! useZoom })
+					} }
+                />
+				<ToolbarButton
+                    icon={ <Icon icon="mesh-wp3d" /> }
+                    label={ __( 'Helpers', 'wp3d-blocks' )}
+					isPressed={ enableHelpers }
+                    onClick={ () => {
+						//setAttributes( {  onoff: ! onoff } )
+						//console.log(onoff,attributes.onoff)
+						onChangeValue("enableHelpers",{ enableHelpers: ! enableHelpers })
+					} }
+                />
+            </ToolbarGroup>
+        </BlockControls>
+		
 		<InspectorControls>
-		<PanelBody 
-				title={ __( 'Import File 3D', 'wp3d-blocks' )}
-				initialOpen={true}
-				>
-				<ToggleGroupControl 
-					id="import-mode-radiogroup"
-					label={ __( 'import mode', 'wp3d-blocks' )} //aria-label - not label really
-					value={import_mode}
-					onChange={ (val) => {
-							setChecked(val);
-							onChangeValue("import_mode",{import_mode: val}) 
-						}
-					} 
-					isBlock>
-					<ToggleGroupControlOption value="media_file" label={ __( 'Media File', 'wp3d-blocks' )} />
-					<ToggleGroupControlOption value="external_url" label={ __( 'External URL', 'wp3d-blocks' )} />
-        		</ToggleGroupControl>
-
-				
-				<div className="components-panel-col">
-					<SelectControl
-						label={ __( 'Format Type', 'wp3d-blocks' )}
-						value={ import_format_type }
-						help={__('IMPORTANT: Select the format of the model you are importing.', 'wp3d-blocks')}
-						options={ [
-							{ label: 'GLTF (gltf-json)', value: 'gltf' },
-							{ label: 'GLB (gltf-binary)', value: 'glb' },
-							{ label: 'DAE (Collada)', value: 'dae' },
-							{ label: 'FBX', value: 'fbx' },
-							{ label: 'STL', value: 'stl' },
-							{ label: 'USDZ', value: 'usdz' },
-							{ label: 'OBJ', value: 'obj' },
-						] }
-						onChange={ ( val ) => {
-							onChangeValue("import_format_type",{ import_format_type: val }) 
-							val == "glb" && setAllowedMimetype('model/gltf-binary')
-							val == "gltf" && setAllowedMimetype('model/gltf-json')
-							val == "dae" && setAllowedMimetype('model/dae')
-							val == "fbx" && setAllowedMimetype('model/fbx')
-							val == "stl" && setAllowedMimetype('application/octet-stream')
-							val == "obj" && setAllowedMimetype('text/plain')
-							val == "zip" && setAllowedMimetype('application/zip')
-							}
-						}
-					/>
-				</div>
-				{ import_mode == "media_file" && 
-					<div>
-						<ChooseModel3d 
-							label={ __( 'Upload Model File', 'wp3d-blocks' )}
-							chooselabel={ __( 'Choose an 3D', 'wp3d-blocks' )}
-							value={import_file}
-							//mimetype={allowedMimetype}
-							onAdd={onSelectMediaModel} 
-							onRemove={removeMediaModel}
-						/>
-					</div>
-
-				}
-
-				{ import_mode == "external_url" && <div>
-					<TextControl
-						label={__('Folder URL', 'wp3d-blocks')}
-						value={ import_folder_path }
-						help={__('Set the absolute URl to folder. (ex: https://mysite.ext/threed/models/obj/)','wp3d-blocks')}
-						onChange={ ( val ) => onChangeValue("import_folder_path",{ import_folder_path: val }) }
-					/>
-					<TextControl
-						label={__('File Name', 'wp3d-blocks')}
-						value={ import_file_name }
-						help={__('The file name. (without extension)', 'wp3d-blocks')}
-						onChange={ ( val ) => onChangeValue("import_file_name",{ import_file_name: val }) }
-					/>
-				</div>
-				}
-				
-				
-				
-				<h3 className="panelbody-heading"><Icon icon="admin-settings" /> {__('Options', 'wp3d-blocks')}</h3>
-				{animations > 0 && <div>
-					<ToggleControl
-						label={__('Animation Mixer', 'wp3d-blocks')}
-						checked={ import_animationMixer }
-						onChange={ ( val ) => onChangeValue("import_animationMixer",{ import_animationMixer: val }) }
-					/>
-				
-					{ import_animationMixer && animations > 2 &&
-						<NumberControl
-							label={"Index Animation ("+(animations-1)+")"}
-							onChange={ ( val ) => onChangeValue("index_animationMixer",{ index_animationMixer: val }) }
-							isDragEnabled
-							min={ 0 }
-							max={ animations-2 }
-							value={ index_animationMixer }
-						/>
-					}
-					</div>
-				}
-				<ToggleControl
-					label={ __( 'AutoScale', 'wp3d-blocks' )}
-					checked={ import_scalemodel }
-					onChange={ ( val ) => onChangeValue("import_scalemodel",{ import_scalemodel: val }) }
+			
+			<div id={`wp3d-modelimport-list-${clientId}-panel`} className="wp3d-blocks-list wp3d-modelimport-list-panel">
+			
+				<InnerBlocks
+					className="wp3d-innerblock"
+					
+					templateLock="all"
+					// defaultBlock={['wp3d/model-points3d','wp3d/model-lights3d']} 
+					// directInsert
+					//orientation='horizontal'
+					__experimentalCaptureToolbars={ true }
+					//template={onChangeLights(light3D_element)}
+					template={ MI_TEMPLATE }
+					templateInsertUpdatesSelection={true} 
+					allowedBlocks={ ALLOWED_BLOCKS } 
+					renderAppender={ () => (
+						<Appender label="Add Elements" onAppend={ appendBlock } selectedBlockId={selectedBlockId} rootClientId={ clientId } ide={ide} itemRef={itemsRef} />
+					) }
 				/>
-				<Button variant="primary" onClick={ toFloor }>{__('To Floor', 'wp3d-blocks')}</Button>
-
+			</div>
+			
+		<TabPanel
+			className="wp3d-tab-panel"
+			activeClass="active-tab"
+			onSelect={ onSelect }
+			selectOnMove={false}
+			orientation='horizontal'
+			tabs={ [
+				{
+					name: 'tabObject',
+					title: __('Object', 'wp3d-blocks'),
+					className: 'wp3d-tab wp3d-tab-object',
+					icon: <Icon icon="object-wp3d" />,
+					content: <>
+						<PanelBody 
+							title={ __( 'Import File 3D', 'wp3d-blocks' )}
+							initialOpen={true}
+							>
+							<ToggleGroupControl 
+								id="import-mode-radiogroup"
+								label={ __( 'import mode', 'wp3d-blocks' )} //aria-label - not label really
+								value={import_mode}
+								onChange={ (val) => {
+										setChecked(val);
+										onChangeValue("import_mode",{import_mode: val}) 
+									}
+								} 
+								isBlock>
+								<ToggleGroupControlOption value="media_file" label={ __( 'Media File', 'wp3d-blocks' )} />
+								<ToggleGroupControlOption value="external_url" label={ __( 'External URL', 'wp3d-blocks' )} />
+							</ToggleGroupControl>
+			
 							
-			</PanelBody>
-			<PanelBody 
-				title={ __( 'Render', 'wp3d-blocks' )}
-				initialOpen={false}
-				>
-				{/* <SelectControl
-					label={ __( 'Output Encoding', 'wp3d-blocks' )}
-					value={ renderer_outputEncoding }
-					options={ [
-						{ label: 'NoColorSpace', value: 'NoColorSpace' },
-						{ label: 'LinearEncoding', value: 'LinearEncoding' },
-						{ label: 'sRGBEncoding', value: 'sRGBEncoding' },
-					] }
-					onChange={ ( val ) => {
-						onChangeValue("renderer_outputEncoding",{ renderer_outputEncoding: val }) 
-						}
-					}
-				/> */}
-				<SelectControl
-					label={ __( 'Tone Mapping', 'wp3d-blocks' )}
-					value={ renderer_toneMapping }
-					options={ [
-						{ label: 'NoToneMapping', value: 'NoToneMapping' },
-						{ label: 'LinearToneMapping', value: 'LinearToneMapping' },
-						{ label: 'ReinhardToneMapping', value: 'ReinhardToneMapping' },
-						{ label: 'CineonToneMapping', value: 'CineonToneMapping' },
-						{ label: 'ACESFilmicToneMapping', value: 'ACESFilmicToneMapping' },
-					] }
-					onChange={ ( val ) => {
-						onChangeValue("renderer_toneMapping",{ renderer_toneMapping: val }) 
-						}
-					}
-				/>
-				{renderer_toneMapping != 'NoToneMapping' && 
-					<RangeControl
-						label={ __( 'Exposure', 'wp3d-blocks' )}
-						value={ renderer_toneMapping_exposure }
-						onChange={ ( val ) => onChangeValue("renderer_toneMapping_exposure",{ renderer_toneMapping_exposure: val }) }
-						min={ 0.01 }
-						max={ 10 }
-						step={ 0.01 }
-					/>
+							<div className="components-panel-col">
+								<SelectControl
+									label={ __( 'Format Type', 'wp3d-blocks' )}
+									value={ import_format_type }
+									help={__('IMPORTANT: Select the format of the model you are importing.', 'wp3d-blocks')}
+									options={ [
+										{ label: 'GLTF (gltf-json)', value: 'gltf' },
+										{ label: 'GLB (gltf-binary)', value: 'glb' },
+										{ label: 'DAE (Collada)', value: 'dae' },
+										{ label: 'FBX', value: 'fbx' },
+										{ label: 'STL', value: 'stl' },
+										{ label: 'USDZ', value: 'usdz' },
+										{ label: 'OBJ', value: 'obj' },
+									] }
+									onChange={ ( val ) => {
+										onChangeValue("import_format_type",{ import_format_type: val }) 
+										val == "glb" && setAllowedMimetype('model/gltf-binary')
+										val == "gltf" && setAllowedMimetype('model/gltf-json')
+										val == "dae" && setAllowedMimetype('model/dae')
+										val == "fbx" && setAllowedMimetype('model/fbx')
+										val == "stl" && setAllowedMimetype('application/octet-stream')
+										val == "obj" && setAllowedMimetype('text/plain')
+										val == "zip" && setAllowedMimetype('application/zip')
+										}
+									}
+								/>
+							</div>
+							{ import_mode == "media_file" && 
+								<div>
+									<ChooseModel3d 
+										label={ __( 'Upload Model File', 'wp3d-blocks' )}
+										chooselabel={ __( 'Choose an 3D', 'wp3d-blocks' )}
+										value={import_file}
+										//mimetype={allowedMimetype}
+										onAdd={onSelectMediaModel} 
+										onRemove={removeMediaModel}
+									/>
+								</div>
+			
+							}
+			
+							{ import_mode == "external_url" && <div>
+								<TextControl
+									label={__('Folder URL', 'wp3d-blocks')}
+									value={ import_folder_path }
+									help={__('Set the absolute URl to folder. (ex: https://mysite.ext/threed/models/obj/)','wp3d-blocks')}
+									onChange={ ( val ) => onChangeValue("import_folder_path",{ import_folder_path: val }) }
+								/>
+								<TextControl
+									label={__('File Name', 'wp3d-blocks')}
+									value={ import_file_name }
+									help={__('The file name. (without extension)', 'wp3d-blocks')}
+									onChange={ ( val ) => onChangeValue("import_file_name",{ import_file_name: val }) }
+								/>
+							</div>
+							}
+							
+							
+							
+							<h3 className="panelbody-heading"><Icon icon="admin-settings" /> {__('Options', 'wp3d-blocks')}</h3>
+							{animations > 0 && <div>
+								<ToggleControl
+									label={__('Animation Mixer', 'wp3d-blocks')}
+									checked={ import_animationMixer }
+									onChange={ ( val ) => onChangeValue("import_animationMixer",{ import_animationMixer: val }) }
+								/>
+							
+								{ import_animationMixer && animations > 2 &&
+									<NumberControl
+										label={"Index Animation ("+(animations-1)+")"}
+										onChange={ ( val ) => onChangeValue("index_animationMixer",{ index_animationMixer: val }) }
+										isDragEnabled
+										min={ 0 }
+										max={ animations-2 }
+										value={ index_animationMixer }
+									/>
+								}
+								</div>
+							}
+							<ToggleControl
+								label={ __( 'AutoScale', 'wp3d-blocks' )}
+								checked={ import_scalemodel }
+								onChange={ ( val ) => onChangeValue("import_scalemodel",{ import_scalemodel: val }) }
+							/>
+							<Button variant="primary" onClick={ toFloor }>{__('To Floor', 'wp3d-blocks')}</Button>
+			
+										
+						</PanelBody>
+					</>
+				},
+				{
+					name: 'tabScene',
+					title: __('Scene', 'wp3d-blocks'),
+					className: 'wp3d-tab wp3d-tab-scene',
+					icon: <Icon icon="scene-wp3d" />,
+					content: <>
+						<PanelBody 
+							title={ __( 'Render', 'wp3d-blocks' )}
+							initialOpen={true}
+							>
+							{/* <SelectControl
+								label={ __( 'Output Encoding', 'wp3d-blocks' )}
+								value={ renderer_outputEncoding }
+								options={ [
+									{ label: 'NoColorSpace', value: 'NoColorSpace' },
+									{ label: 'LinearEncoding', value: 'LinearEncoding' },
+									{ label: 'sRGBEncoding', value: 'sRGBEncoding' },
+								] }
+								onChange={ ( val ) => {
+									onChangeValue("renderer_outputEncoding",{ renderer_outputEncoding: val }) 
+									}
+								}
+							/> */}
+							<SelectControl
+								label={ __( 'Tone Mapping', 'wp3d-blocks' )}
+								value={ renderer_toneMapping }
+								options={ [
+									{ label: 'NoToneMapping', value: 'NoToneMapping' },
+									{ label: 'LinearToneMapping', value: 'LinearToneMapping' },
+									{ label: 'ReinhardToneMapping', value: 'ReinhardToneMapping' },
+									{ label: 'CineonToneMapping', value: 'CineonToneMapping' },
+									{ label: 'ACESFilmicToneMapping', value: 'ACESFilmicToneMapping' },
+								] }
+								onChange={ ( val ) => {
+									onChangeValue("renderer_toneMapping",{ renderer_toneMapping: val }) 
+									}
+								}
+							/>
+							{renderer_toneMapping != 'NoToneMapping' && 
+								<RangeControl
+									label={ __( 'Exposure', 'wp3d-blocks' )}
+									value={ renderer_toneMapping_exposure }
+									onChange={ ( val ) => onChangeValue("renderer_toneMapping_exposure",{ renderer_toneMapping_exposure: val }) }
+									min={ 0.01 }
+									max={ 10 }
+									step={ 0.01 }
+								/>
+							}
+						</PanelBody>
+						<PanelBody 
+						title={ __( 'Camera', 'wp3d-blocks' )}
+						initialOpen={selectedCamera}
+						onToggle={(state)=>{
+							setSelectedCamera(state)
+						}}
+						>
+							<RangeControl
+								label={ __( 'Fov', 'wp3d-blocks' )}
+								value={ camera_fov }
+								onChange={ ( val ) => onChangeValue("camera_fov",{ camera_fov: val }) }
+								min={ 10 }
+								max={ 180 }
+								allowReset={true}
+								resetFallbackValue={40}
+							/>
+							<RangeControl
+								label="Zoom"
+								value={ camera_zoom }
+								onChange={ ( val ) => onChangeValue("camera_zoom",{ camera_zoom: val }) }
+								min={ 0.1 }
+								max={ 3 }
+								step={ 0.001 }
+								allowReset={true}
+								resetFallbackValue={1}
+							/>
+							<div className="components-panel-col">
+							<h3><Icon icon="video-alt2" /> {__('Camera Position', 'wp3d-blocks')}</h3>
+							<RangeControl
+								label="X"
+								value={ camera_posx }
+								onChange={ ( val ) => onChangeValue("camera_posx",{ camera_posx: val }) }
+								min={ -10 }
+								max={ 10 }
+								step={ 0.01 }
+								allowReset={true}
+								resetFallbackValue={0}
+							/>
+							<RangeControl
+								label="Y"
+								value={ camera_posy }
+								onChange={ ( val ) => onChangeValue("camera_posy",{ camera_posy: val }) }
+								min={ -10 }
+								max={ 10 }
+								step={ 0.01 }
+								allowReset={true}
+								resetFallbackValue={0}
+							/>
+							<RangeControl
+								label="Z"
+								value={ camera_posz }
+								onChange={ ( val ) => onChangeValue("camera_posz",{ camera_posz: val }) }
+								min={ -10 }
+								max={ 10 }
+								step={ 0.01 }
+								allowReset={true}
+								resetFallbackValue={4}
+							/>
+							<Button variant="primary" onClick={ clickReset }>{__('Reset position', 'wp3d-blocks')}</Button>
+							<Button variant="primary" onClick={ showObject }>{__('Show Object', 'wp3d-blocks')}</Button>
+							</div>
+							<div className="components-panel-col">
+							<h3><Icon icon="plus" /> {__('Camera Target', 'wp3d-blocks')}</h3>
+							<RangeControl
+								label="X"
+								value={ camera_targetx }
+								onChange={ ( val ) => onChangeValue("camera_targetx",{ camera_targetx: val }) }
+								min={ -10 }
+								max={ 10 }
+								step={ 0.01 }
+								allowReset={true}
+								resetFallbackValue={0}
+							/>
+							<RangeControl
+								label="Y"
+								value={ camera_targety }
+								onChange={ ( val ) => onChangeValue("camera_targety",{ camera_targety: val }) }
+								min={ -10 }
+								max={ 10 }
+								step={ 0.01 }
+								allowReset={true}
+								resetFallbackValue={0}
+							/>
+							<RangeControl
+								label="Z"
+								value={ camera_targetz }
+								onChange={ ( val ) => onChangeValue("camera_targetz",{ camera_targetz: val }) }
+								min={ -10 }
+								max={ 10 }
+								step={ 0.01 }
+								allowReset={true}
+								resetFallbackValue={0}
+							/>
+							<Button variant="primary" onClick={ clickReset }>{__('Reset position', 'wp3d-blocks')}</Button>
+							</div>
+						</PanelBody>
+					</>
+				},
+				{
+					name: 'tabTransform',
+					title: __('Transform', 'wp3d-blocks'),
+					className: 'wp3d-tab wp3d-tab-transform',
+					icon: <Icon icon="transform1-wp3d" />,
+					content: <>
+						<PanelBody 
+						title={ __( 'Transform', 'wp3d-blocks' )}
+						initialOpen={true}
+						>
+							<ToggleControl
+								label={ __( 'Enable Transform', 'wp3d-blocks' ) }
+								checked={ enableTransform }
+								onChange={ ( val ) => onChangeValue("enableTransform",{ enableTransform: val }) }
+							/>
+							
+							{enableTransform && 
+							<div>
+								
+								<RangeControl
+								label="X"
+								value={ geometry_mesh_posx }
+								onChange={ ( val ) => onChangeValue("geometry_mesh_posx",{ geometry_mesh_posx: val }) }
+								min={ -10 }
+								max={ 10 }
+								step={ 0.01 }
+								allowReset={true}
+								resetFallbackValue={0}
+							/>
+							<RangeControl
+								label="Y"
+								value={ geometry_mesh_posy }
+								onChange={ ( val ) => onChangeValue("geometry_mesh_posy",{ geometry_mesh_posy: val }) }
+								min={ -10 }
+								max={ 10 }
+								step={ 0.01 }
+								allowReset={true}
+								resetFallbackValue={0}
+							/>
+							<RangeControl
+								label="Z"
+								value={ geometry_mesh_posz }
+								onChange={ ( val ) => onChangeValue("geometry_mesh_posz",{ geometry_mesh_posz: val }) }
+								min={ -10 }
+								max={ 10 }
+								step={ 0.01 }
+								allowReset={true}
+								resetFallbackValue={0}
+							/>
+			
+							<h3><Icon icon="plus" /> {__('Rotation', 'wp3d-blocks')}</h3>
+							<RangeControl
+								label="X"
+								value={ geometry_mesh_rotx }
+								onChange={ ( val ) => onChangeValue("geometry_mesh_rotx",{ geometry_mesh_rotx: val }) }
+								min={ -180 }
+								max={ 180 }
+								step={ 0.01 }
+								allowReset={true}
+								resetFallbackValue={0}
+							/>
+							<RangeControl
+								label="Y"
+								value={ geometry_mesh_roty }
+								onChange={ ( val ) => onChangeValue("geometry_mesh_roty",{ geometry_mesh_roty: val }) }
+								min={ -180 }
+								max={ 180 }
+								step={ 0.01 }
+								allowReset={true}
+								resetFallbackValue={0}
+							/>
+							<RangeControl
+								label="Z"
+								value={ geometry_mesh_rotz }
+								onChange={ ( val ) => onChangeValue("geometry_mesh_rotz",{ geometry_mesh_rotz: val }) }
+								min={ -180 }
+								max={ 180 }
+								step={ 0.01 }
+								allowReset={true}
+								resetFallbackValue={0}
+							/>
+							
+							<RangeControl
+								label={__( 'Scale', 'wp3d-blocks' )}
+								value={ geometry_mesh_scale }
+								onChange={ ( val ) => onChangeValue("geometry_mesh_scale",{ geometry_mesh_scale: val }) }
+								min={ 0.01 }
+								max={ 10 }
+								step={ 0.01 }
+								allowReset={true}
+								resetFallbackValue={1}
+							/>
+			
+							<Button variant="primary" onClick={ clickResetTransform }>{__( 'Reset Rotation', 'wp3d-blocks' )}</Button>
+								
+							</div>}
+							
+						</PanelBody>
+					</>
+				},
+				{
+					name: 'tabInteracyivity',
+					title: __('Interactivity', 'wp3d-blocks'),
+					className: 'wp3d-tab wp3d-tab-interactivity',
+					icon: <Icon icon="mousewheel-wp3d" />,
+					content: <>
+						<PanelBody 
+						title={ __( 'Interactivity', 'wp3d-blocks' )}
+						initialOpen={true}
+						>
+							{/* <h3><Icon icon="move" /> {__('Interactivity', 'wp3d-blocks')}</h3> */}
+							<ToggleControl
+								label={ __( 'Damping', 'wp3d-blocks' )}
+								checked={ useDamping }
+								onChange={ ( val ) => onChangeValue("useDamping",{ useDamping: val }) }
+							/>
+							{ useDamping && (
+									<RangeControl
+									label={ __( 'Damping Factor', 'wp3d-blocks' )}
+									value={ dampingFactor }
+									onChange={ ( val ) => onChangeValue("dampingFactor",{ dampingFactor: val }) }
+									min={ 0.01 }
+									max={ 0.1 }
+									step={ 0.01 }
+									allowReset={true}
+									resetFallbackValue={ 0.05 }
+			
+									/>
+								)
+							}
+							<ToggleControl
+								label={ __( 'Zoom on Wheel', 'wp3d-blocks' )}
+								checked={ useZoom }
+								onChange={ ( val ) => onChangeValue("useZoom",{ useZoom: val }) }
+							/>
+							<ToggleControl
+								label={ __( 'Autorotate', 'wp3d-blocks' )}
+								checked={ autorotate }
+								onChange={ ( val ) => onChangeValue("autorotate",{ autorotate: val }) }
+							/>
+							{ autorotate && (
+									<RangeControl
+									label="Speed"
+									value={ autorotateSpeed }
+									onChange={ ( val ) => onChangeValue("autorotateSpeed",{ autorotateSpeed: val }) }
+									min={ 0.1 }
+									max={ 20 }
+									step={ 0.1 }
+									allowReset={true}
+									resetFallbackValue={1}
+									/>
+								)
+							}
+						</PanelBody>
+					</>
+				},
+				{
+					name: 'tabSky',
+					title: __('Sky', 'wp3d-blocks'),
+					className: 'wp3d-tab wp3d-tab-sky',
+					icon: <Icon icon="sky-wp3d" />,
+					content: <SkyPanel props={props} onChange={onChangeValue} isOpen={true} />
+				},
+				{
+					name: 'tabLight',
+					title: __('Light and Shadow', 'wp3d-blocks'),
+					className: 'wp3d-tab wp3d-tab-light',
+					icon: <Icon icon="shadows-wp3d" />,
+					content: <>
+							<PanelBody 
+							title={ __( 'Light', 'wp3d-blocks' )}
+							initialOpen={true}
+							>
+								<RangeControl
+									label={ __( 'Ambient Light Intensity', 'wp3d-blocks' )}
+									value={ light_intensity }
+									onChange={ ( val ) => onChangeValue("light_intensity",{ light_intensity: val }) }
+									min={ 0.01 }
+									max={ 10 }
+									step={ 0.01 }
+									allowReset={true}
+									resetFallbackValue={ 1 }
+								/>
+								<RangeControl
+									label={ __( 'Spot Light Intensity', 'wp3d-blocks' )}
+									value={ spot_intensity }
+									onChange={ ( val ) => onChangeValue("spot_intensity",{ spot_intensity: val }) }
+									min={ 0.01 }
+									max={ 10 }
+									step={ 0.01 }
+									allowReset={true}
+									resetFallbackValue={ 1 }
+								/>
+								<RangeControl
+									label={ __( 'Left Light Intensity', 'wp3d-blocks' )}
+									value={ leftspot_intensity }
+									onChange={ ( val ) => onChangeValue("leftspot_intensity",{ leftspot_intensity: val }) }
+									min={ 0.01 }
+									max={ 10 }
+									step={ 0.01 }
+									allowReset={true}
+									resetFallbackValue={ 0.01 }
+								/>
+								<RangeControl
+									label={ __( 'Right Light Intensity', 'wp3d-blocks' )}
+									value={ rightspot_intensity }
+									onChange={ ( val ) => onChangeValue("rightspot_intensity",{ rightspot_intensity: val }) }
+									min={ 0.01 }
+									max={ 10 }
+									step={ 0.01 }
+									allowReset={true}
+									resetFallbackValue={ 0.01 }
+								/>
+							</PanelBody>
+							<PanelBody 
+							title={ __( 'Contact Shadow', 'wp3d-blocks' )}
+							initialOpen={selectedCS}
+							onToggle={(state)=>{
+								setSelectedCS(state)
+							}}
+							>
+								{/* "color":"#000000", "blurx":0.5, "blury":0.5, "sensibility":0.5, "darkness":1,"opacity":1 */}
+								<ToggleControl
+									label={ __( 'Enable Contact Shadow', 'wp3d-blocks' )}
+									checked={ enableContactshadow }
+									onChange={ ( val ) => onChangeValue("enableContactshadow",{ enableContactshadow: val }) }
+								/>
+								{enableContactshadow && <><RangeControl
+									label={ __( 'Blur X', 'wp3d-blocks' )}
+									value={ cs_blurx }
+									onChange={ ( val ) => onChangeValue("contactshadow-blurx",{ cs_blurx: val }) }
+									min={ 0 }
+									max={ 2 }
+									step={ 0.01 }
+									allowReset={true}
+									resetFallbackValue={ 0.5 }
+								/>
+								<RangeControl
+									label={ __( 'Blur Y', 'wp3d-blocks' )}
+									value={ cs_blury }
+									onChange={ ( val ) => onChangeValue("contactshadow-blury",{ cs_blury: val }) }
+									min={ 0 }
+									max={ 2 }
+									step={ 0.01 }
+									allowReset={true}
+									resetFallbackValue={ 0.5 }
+								/>
+								<RangeControl
+									label={ __( 'Sensibility', 'wp3d-blocks' )}
+									value={ cs_sensibility }
+									onChange={ ( val ) => onChangeValue("contactshadow-sensibility",{ cs_sensibility: val }) }
+									min={ 0 }
+									max={ 2 }
+									step={ 0.01 }
+									allowReset={true}
+									resetFallbackValue={ 0.5 }
+								/>
+								<RangeControl
+									label={ __( 'Darkness', 'wp3d-blocks' )}
+									value={ cs_darkness}
+									onChange={ ( val ) => onChangeValue("contactshadow-darkness",{ cs_darkness: val }) }
+									min={ 0 }
+									max={ 2 }
+									step={ 0.01 }
+									allowReset={true}
+									resetFallbackValue={ 1 }
+								/>
+								<RangeControl
+									label={ __( 'Opacity', 'wp3d-blocks' )}
+									value={ cs_opacity }
+									onChange={ ( val ) => onChangeValue("contactshadow-opacity",{ cs_opacity: val }) }
+									min={ 0 }
+									max={ 1 }
+									step={ 0.01 }
+									allowReset={true}
+									resetFallbackValue={ 1 }
+								/>
+								<ColorPicker
+									label={ __( 'Color', 'wp3d-blocks' )}
+									color={cs_color}
+									onChange={ ( val ) => onChangeValue("contactshadow-color",{ cs_color: val }) }
+									//enableAlpha
+									defaultValue="#000000"
+								/>
+								</>}
+						</PanelBody>
+						<PanelBody 
+							title={ __( 'Shadows', 'wp3d-blocks' )}
+							initialOpen={selectedShadows}
+							onToggle={(state)=>{
+								setSelectedShadows(state)
+							}}
+							>
+							<ToggleControl
+								label={ __( 'CastShadow', 'wp3d-blocks' )}
+								checked={ objshadows_castShadow }
+								onChange={ ( val ) => onChangeValue("objshadows_castShadow",{ objshadows_castShadow: val }) }
+							/>
+							<ToggleControl
+								label={ __( 'ReceiveShadow', 'wp3d-blocks' )}
+								checked={ objshadows_receiveShadow }
+								onChange={ ( val ) => onChangeValue("objshadows_receiveShadow",{ objshadows_receiveShadow: val }) }
+							/>
+						</PanelBody>
+					</>
+				},
+				{
+					name: 'tabOptions',
+					title: __('Options', 'wp3d-blocks'),
+					className: 'wp3d-tab wp3d-tab-options',
+					icon: <Icon icon="logo-nerdsfarm-wp3d" />,
+					content: <>
+						<PanelBody 
+						title={ __( 'Navigator', 'wp3d-blocks' )}
+						initialOpen={selectedNavigator}
+						onToggle={(state)=>{
+							setSelectedNavigator(state)
+						}}
+						>
+							<ToggleControl
+								label={ __( 'Left', 'wp3d-blocks' )}
+								checked={ nav_left }
+								onChange={ ( val ) => onChangeValue("nav_left",{ nav_left: val }) }
+							/>
+							<ToggleControl
+								label={ __( 'Right', 'wp3d-blocks' )}
+								checked={ nav_right }
+								onChange={ ( val ) => onChangeValue("nav_right",{ nav_right: val }) }
+							/>
+							<ToggleControl
+								label={ __( 'Top', 'wp3d-blocks' )}
+								checked={ nav_top }
+								onChange={ ( val ) => onChangeValue("nav_top",{ nav_top: val }) }
+							/>
+							<ToggleControl
+								label={ __( 'Bottom', 'wp3d-blocks' )}
+								checked={ nav_bottom }
+								onChange={ ( val ) => onChangeValue("nav_bottom",{ nav_bottom: val }) }
+							/>
+							<ToggleControl
+								label={ __( 'Front', 'wp3d-blocks' )}
+								checked={ nav_front }
+								onChange={ ( val ) => onChangeValue("nav_front",{ nav_front: val }) }
+							/>
+							<ToggleControl
+								label={ __( 'Back', 'wp3d-blocks' )}
+								checked={ nav_back }
+								onChange={ ( val ) => onChangeValue("nav_back",{ nav_back: val }) }
+							/>
+							<ToggleControl
+								label={ __( 'Default', 'wp3d-blocks' )}
+								checked={ nav_default }
+								onChange={ ( val ) => onChangeValue("nav_default",{ nav_default: val }) }
+							/>
+						</PanelBody>
+						
+						<ViewportPanel props={props} onChange={onChangeValue} />
+						
+						<PanelBody 
+							title={ __( 'Helpers', 'wp3d-blocks' )}
+							initialOpen={selectedHelpers}
+							onToggle={(state)=>{
+								setSelectedHelpers(state)
+							}}
+							>
+							<p>{ __( 'These options are only visible in the editor', 'wp3d-blocks' )}</p>
+							<ToggleControl
+								label={ __( 'Enable Helpers', 'wp3d-blocks' )}
+								checked={ enableHelpers }
+								onChange={ ( val ) => onChangeValue("enableHelpers",{ enableHelpers: val }) }
+							/>
+							{enableHelpers && <>
+								<Divider />
+								<ToggleControl
+									label={ __( 'Box', 'wp3d-blocks' )}
+									checked={ helper_box }
+									onChange={ ( val ) => onChangeValue("helper_box",{ helper_box: val }) }
+								/>
+								<ToggleControl
+									label={ __( 'Center', 'wp3d-blocks' )}
+									checked={ helper_center }
+									onChange={ ( val ) => onChangeValue("helper_center",{ helper_center: val }) }
+								/>
+								<ToggleControl
+									label={ __( 'Floor', 'wp3d-blocks' )}
+									checked={ helper_floor }
+									onChange={ ( val ) => onChangeValue("helper_floor",{ helper_floor: val }) }
+								/>
+								<ToggleControl
+									label={ __( 'Light', 'wp3d-blocks' )}
+									checked={ helper_spotlight }
+									onChange={ ( val ) => onChangeValue("helper_spotlight",{ helper_spotlight: val }) }
+								/>
+								{/* <ToggleControl
+									label={ __( 'Left Light', 'wp3d-blocks' )}
+									checked={ helper_leftlight }
+									onChange={ ( val ) => onChangeValue("helper_leftlight",{ helper_leftlight: val }) }
+								/>
+								<ToggleControl
+									label={ __( 'Right Light', 'wp3d-blocks' )}
+									checked={ helper_rightlight }
+									onChange={ ( val ) => onChangeValue("helper_rightlight",{ helper_rightlight: val }) }
+								/> */}
+							</>}
+						</PanelBody>
+					
+					</>
 				}
-			</PanelBody>
+			] }
+		>
+			{({ title, content, className }) => <div className={className}>{content}</div>}
+		</TabPanel>
+		
+		
 			
-			<SkyPanel props={props} onChange={onChangeValue} />
-			
-			<PanelBody 
-			title={ __( 'Light', 'wp3d-blocks' )}
-			initialOpen={false}
-			>
-				<RangeControl
-					label={ __( 'Ambient Light Intensity', 'wp3d-blocks' )}
-					value={ light_intensity }
-					onChange={ ( val ) => onChangeValue("light_intensity",{ light_intensity: val }) }
-					min={ 0.01 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={ 1 }
-				/>
-				<RangeControl
-					label={ __( 'Spot Light Intensity', 'wp3d-blocks' )}
-					value={ spot_intensity }
-					onChange={ ( val ) => onChangeValue("spot_intensity",{ spot_intensity: val }) }
-					min={ 0.01 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={ 1 }
-				/>
-				<RangeControl
-					label={ __( 'Left Light Intensity', 'wp3d-blocks' )}
-					value={ leftspot_intensity }
-					onChange={ ( val ) => onChangeValue("leftspot_intensity",{ leftspot_intensity: val }) }
-					min={ 0 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={ 0 }
-				/>
-				<RangeControl
-					label={ __( 'Right Light Intensity', 'wp3d-blocks' )}
-					value={ rightspot_intensity }
-					onChange={ ( val ) => onChangeValue("rightspot_intensity",{ rightspot_intensity: val }) }
-					min={ 0 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={ 0 }
-				/>
-			</PanelBody>
-			
-			<PanelBody 
-				title={ __( 'Contact Shadow', 'wp3d-blocks' )}
-				initialOpen={false}
-				>
-					{/* "color":"#000000", "blurx":0.5, "blury":0.5, "sensibility":0.5, "darkness":1,"opacity":1 */}
-					<ToggleControl
-						label={ __( 'Enable Contact Shadow', 'wp3d-blocks' )}
-						checked={ enableContactshadow }
-						onChange={ ( val ) => onChangeValue("enableContactshadow",{ enableContactshadow: val }) }
-					/>
-					{enableContactshadow && <><RangeControl
-						label={ __( 'Blur X', 'wp3d-blocks' )}
-						value={ cs_blurx }
-						onChange={ ( val ) => onChangeValue("contactshadow-blurx",{ cs_blurx: val }) }
-						min={ 0 }
-						max={ 2 }
-						step={ 0.01 }
-						allowReset={true}
-						resetFallbackValue={ 0.5 }
-					/>
-					<RangeControl
-						label={ __( 'Blur Y', 'wp3d-blocks' )}
-						value={ cs_blury }
-						onChange={ ( val ) => onChangeValue("contactshadow-blury",{ cs_blury: val }) }
-						min={ 0 }
-						max={ 2 }
-						step={ 0.01 }
-						allowReset={true}
-						resetFallbackValue={ 0.5 }
-					/>
-					<RangeControl
-						label={ __( 'Sensibility', 'wp3d-blocks' )}
-						value={ cs_sensibility }
-						onChange={ ( val ) => onChangeValue("contactshadow-sensibility",{ cs_sensibility: val }) }
-						min={ 0 }
-						max={ 2 }
-						step={ 0.01 }
-						allowReset={true}
-						resetFallbackValue={ 0.5 }
-					/>
-					<RangeControl
-						label={ __( 'Darkness', 'wp3d-blocks' )}
-						value={ cs_darkness}
-						onChange={ ( val ) => onChangeValue("contactshadow-darkness",{ cs_darkness: val }) }
-						min={ 0 }
-						max={ 2 }
-						step={ 0.01 }
-						allowReset={true}
-						resetFallbackValue={ 1 }
-					/>
-					<RangeControl
-						label={ __( 'Opacity', 'wp3d-blocks' )}
-						value={ cs_opacity }
-						onChange={ ( val ) => onChangeValue("contactshadow-opacity",{ cs_opacity: val }) }
-						min={ 0 }
-						max={ 1 }
-						step={ 0.01 }
-						allowReset={true}
-						resetFallbackValue={ 1 }
-					/>
-					<ColorPicker
-						label={ __( 'Color', 'wp3d-blocks' )}
-						color={cs_color}
-						onChange={ ( val ) => onChangeValue("contactshadow-color",{ cs_color: val }) }
-						//enableAlpha
-						defaultValue="#000000"
-					/>
-					</>}
-			</PanelBody>
-			<PanelBody 
-				title={ __( 'Shadows', 'wp3d-blocks' )}
-				initialOpen={false}
-				>
-				<ToggleControl
-					label={ __( 'CastShadow', 'wp3d-blocks' )}
-					checked={ objshadows_castShadow }
-					onChange={ ( val ) => onChangeValue("objshadows_castShadow",{ objshadows_castShadow: val }) }
-				/>
-				<ToggleControl
-					label={ __( 'ReceiveShadow', 'wp3d-blocks' )}
-					checked={ objshadows_receiveShadow }
-					onChange={ ( val ) => onChangeValue("objshadows_receiveShadow",{ objshadows_receiveShadow: val }) }
-				/>
-			</PanelBody>
-			<PanelBody 
-				title={ __( 'Interactivity', 'wp3d-blocks' )}
-				initialOpen={false}
-				>
-				{/* <h3><Icon icon="move" /> {__('Interactivity', 'wp3d-blocks')}</h3> */}
-				<ToggleControl
-					label={ __( 'Damping', 'wp3d-blocks' )}
-					checked={ useDamping }
-					onChange={ ( val ) => onChangeValue("useDamping",{ useDamping: val }) }
-				/>
-				{ useDamping && (
-						<RangeControl
-						label={ __( 'Damping Factor', 'wp3d-blocks' )}
-						value={ dampingFactor }
-						onChange={ ( val ) => onChangeValue("dampingFactor",{ dampingFactor: val }) }
-						min={ 0.01 }
-						max={ 0.1 }
-						step={ 0.01 }
-						resetFallbackValue={ 0.01 }
-						/>
-					)
-				}
-				<ToggleControl
-					label={ __( 'Zoom on Wheel', 'wp3d-blocks' )}
-					checked={ useZoom }
-					onChange={ ( val ) => onChangeValue("useZoom",{ useZoom: val }) }
-				/>
-				<ToggleControl
-					label={ __( 'Autorotate', 'wp3d-blocks' )}
-					checked={ autorotate }
-					onChange={ ( val ) => onChangeValue("autorotate",{ autorotate: val }) }
-				/>
-				{ autorotate && (
-						<RangeControl
-						label="Speed"
-						value={ autorotateSpeed }
-						onChange={ ( val ) => onChangeValue("autorotateSpeed",{ autorotateSpeed: val }) }
-						min={ 0.1 }
-						max={ 20 }
-						step={ 0.1 }
-						resetFallbackValue={1}
-						/>
-					)
-				}
-			</PanelBody>
-			<PanelBody 
-			title={ __( 'Camera', 'wp3d-blocks' )}
-			initialOpen={false}
-			>
-				<RangeControl
-					label={ __( 'Fov', 'wp3d-blocks' )}
-					value={ camera_fov }
-					onChange={ ( val ) => onChangeValue("camera_fov",{ camera_fov: val }) }
-					min={ 10 }
-					max={ 180 }
-					allowReset={true}
-					resetFallbackValue={40}
-				/>
-				<RangeControl
-					label="Zoom"
-					value={ camera_zoom }
-					onChange={ ( val ) => onChangeValue("camera_zoom",{ camera_zoom: val }) }
-					min={ 0.1 }
-					max={ 3 }
-					step={ 0.001 }
-					allowReset={true}
-					resetFallbackValue={1}
-				/>
-				<div className="components-panel-col">
-				<h3><Icon icon="video-alt2" /> {__('Camera Position', 'wp3d-blocks')}</h3>
-				<RangeControl
-					label="X"
-					value={ camera_posx }
-					onChange={ ( val ) => onChangeValue("camera_posx",{ camera_posx: val }) }
-					min={ -10 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={0}
-				/>
-				<RangeControl
-					label="Y"
-					value={ camera_posy }
-					onChange={ ( val ) => onChangeValue("camera_posy",{ camera_posy: val }) }
-					min={ -10 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={0}
-				/>
-				<RangeControl
-					label="Z"
-					value={ camera_posz }
-					onChange={ ( val ) => onChangeValue("camera_posz",{ camera_posz: val }) }
-					min={ -10 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={4}
-				/>
-				<Button variant="primary" onClick={ clickReset }>{__('Reset position', 'wp3d-blocks')}</Button>
-				<Button variant="primary" onClick={ showObject }>{__('Show Object', 'wp3d-blocks')}</Button>
-				</div>
-				<div className="components-panel-col">
-				<h3><Icon icon="plus" /> {__('Camera Target', 'wp3d-blocks')}</h3>
-				<RangeControl
-					label="X"
-					value={ camera_targetx }
-					onChange={ ( val ) => onChangeValue("camera_targetx",{ camera_targetx: val }) }
-					min={ -10 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={0}
-				/>
-				<RangeControl
-					label="Y"
-					value={ camera_targety }
-					onChange={ ( val ) => onChangeValue("camera_targety",{ camera_targety: val }) }
-					min={ -10 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={0}
-				/>
-				<RangeControl
-					label="Z"
-					value={ camera_targetz }
-					onChange={ ( val ) => onChangeValue("camera_targetz",{ camera_targetz: val }) }
-					min={ -10 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={0}
-				/>
-				<Button variant="primary" onClick={ clickReset }>{__('Reset position', 'wp3d-blocks')}</Button>
-				</div>
-			</PanelBody>	
-			<PanelBody 
-			title={ __( 'Transform', 'wp3d-blocks' )}
-			initialOpen={false}
-			>
-				<ToggleControl
-					label={ __( 'Enable Transform', 'wp3d-blocks' ) }
-					checked={ enableTransform }
-					onChange={ ( val ) => onChangeValue("enableTransform",{ enableTransform: val }) }
-				/>
-				
-				{enableTransform && 
-				<div>
-					
-					<RangeControl
-					label="X"
-					value={ geometry_mesh_posx }
-					onChange={ ( val ) => onChangeValue("geometry_mesh_posx",{ geometry_mesh_posx: val }) }
-					min={ -10 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={0}
-				/>
-				<RangeControl
-					label="Y"
-					value={ geometry_mesh_posy }
-					onChange={ ( val ) => onChangeValue("geometry_mesh_posy",{ geometry_mesh_posy: val }) }
-					min={ -10 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={0}
-				/>
-				<RangeControl
-					label="Z"
-					value={ geometry_mesh_posz }
-					onChange={ ( val ) => onChangeValue("geometry_mesh_posz",{ geometry_mesh_posz: val }) }
-					min={ -10 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={0}
-				/>
-
-				<h3><Icon icon="plus" /> {__('Rotation', 'wp3d-blocks')}</h3>
-				<RangeControl
-					label="X"
-					value={ geometry_mesh_rotx }
-					onChange={ ( val ) => onChangeValue("geometry_mesh_rotx",{ geometry_mesh_rotx: val }) }
-					min={ -180 }
-					max={ 180 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={0}
-				/>
-				<RangeControl
-					label="Y"
-					value={ geometry_mesh_roty }
-					onChange={ ( val ) => onChangeValue("geometry_mesh_roty",{ geometry_mesh_roty: val }) }
-					min={ -180 }
-					max={ 180 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={0}
-				/>
-				<RangeControl
-					label="Z"
-					value={ geometry_mesh_rotz }
-					onChange={ ( val ) => onChangeValue("geometry_mesh_rotz",{ geometry_mesh_rotz: val }) }
-					min={ -180 }
-					max={ 180 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={0}
-				/>
-				
-				<RangeControl
-					label={__( 'Scale', 'wp3d-blocks' )}
-					value={ geometry_mesh_scale }
-					onChange={ ( val ) => onChangeValue("geometry_mesh_scale",{ geometry_mesh_scale: val }) }
-					min={ 0.01 }
-					max={ 10 }
-					step={ 0.01 }
-					allowReset={true}
-					resetFallbackValue={1}
-				/>
-
-				<Button variant="primary" onClick={ clickResetTransform }>{__( 'Reset Rotation', 'wp3d-blocks' )}</Button>
-					
-				</div>}
-				
-			</PanelBody>
-			<PanelBody 
-			title={ __( 'Navigator', 'wp3d-blocks' )}
-			initialOpen={false}
-			>
-				<ToggleControl
-					label={ __( 'Left', 'wp3d-blocks' )}
-					checked={ nav_left }
-					onChange={ ( val ) => onChangeValue("nav_left",{ nav_left: val }) }
-				/>
-				<ToggleControl
-					label={ __( 'Right', 'wp3d-blocks' )}
-					checked={ nav_right }
-					onChange={ ( val ) => onChangeValue("nav_right",{ nav_right: val }) }
-				/>
-				<ToggleControl
-					label={ __( 'Top', 'wp3d-blocks' )}
-					checked={ nav_top }
-					onChange={ ( val ) => onChangeValue("nav_top",{ nav_top: val }) }
-				/>
-				<ToggleControl
-					label={ __( 'Bottom', 'wp3d-blocks' )}
-					checked={ nav_bottom }
-					onChange={ ( val ) => onChangeValue("nav_bottom",{ nav_bottom: val }) }
-				/>
-				<ToggleControl
-					label={ __( 'Front', 'wp3d-blocks' )}
-					checked={ nav_front }
-					onChange={ ( val ) => onChangeValue("nav_front",{ nav_front: val }) }
-				/>
-				<ToggleControl
-					label={ __( 'Back', 'wp3d-blocks' )}
-					checked={ nav_back }
-					onChange={ ( val ) => onChangeValue("nav_back",{ nav_back: val }) }
-				/>
-				<ToggleControl
-					label={ __( 'Default', 'wp3d-blocks' )}
-					checked={ nav_default }
-					onChange={ ( val ) => onChangeValue("nav_default",{ nav_default: val }) }
-				/>
-			</PanelBody>
-			<ViewportPanel props={props} onChange={onChangeValue} />
-			
-			<PanelBody 
-				title={ __( 'Helpers', 'wp3d-blocks' )}
-				initialOpen={false}
-				>
-				<p>{ __( 'These options are only visible in the editor', 'wp3d-blocks' )}</p>
-				<ToggleControl
-					label={ __( 'Box', 'wp3d-blocks' )}
-					checked={ helper_box }
-					onChange={ ( val ) => onChangeValue("helper_box",{ helper_box: val }) }
-				/>
-				<ToggleControl
-					label={ __( 'Center', 'wp3d-blocks' )}
-					checked={ helper_center }
-					onChange={ ( val ) => onChangeValue("helper_center",{ helper_center: val }) }
-				/>
-				<ToggleControl
-					label={ __( 'Floor', 'wp3d-blocks' )}
-					checked={ helper_floor }
-					onChange={ ( val ) => onChangeValue("helper_floor",{ helper_floor: val }) }
-				/>
-				<ToggleControl
-					label={ __( 'Light', 'wp3d-blocks' )}
-					checked={ helper_spotlight }
-					onChange={ ( val ) => onChangeValue("helper_spotlight",{ helper_spotlight: val }) }
-				/>
-				{/* <ToggleControl
-					label={ __( 'Left Light', 'wp3d-blocks' )}
-					checked={ helper_leftlight }
-					onChange={ ( val ) => onChangeValue("helper_leftlight",{ helper_leftlight: val }) }
-				/>
-				<ToggleControl
-					label={ __( 'Right Light', 'wp3d-blocks' )}
-					checked={ helper_rightlight }
-					onChange={ ( val ) => onChangeValue("helper_rightlight",{ helper_rightlight: val }) }
-				/> */}
-			</PanelBody>
-			{/* <PanelBody 
-				title={ __( 'Helpers', 'wp3d-blocks' )}
-				initialOpen={false}
-				>
-					<h5>{__( 'Select helpers', 'wp3d-blocks' )}</h5>
-					<ul>
-						<li>{__( 'Floor', 'wp3d-blocks' )}</li>
-						<li>{__( 'Center', 'wp3d-blocks' )}</li>
-						<li>{__( 'Spot Light', 'wp3d-blocks' )}</li>
-						<li>{__( 'Left Light', 'wp3d-blocks' )}</li>
-						<li>{__( 'Right Light', 'wp3d-blocks' )}</li>
-					</ul>
-					<FormTokenField
-
-						value={ selectedHelpers }
-						suggestions={ helpers }
-						onChange={ ( tokens ) => {
-							setSelectedHelpers( tokens )
-							onChangeValue("helpers",{ helpers: tokens })
-						} }
-					/>
-					
-					<p>{ __( 'These options are only visible in the editor', 'wp3d-blocks' )}</p>
-					
-				</PanelBody> */}
 		</InspectorControls>
 		</>
 	);

@@ -11,6 +11,7 @@ import {
     WebGLRenderTarget,
     
     MeshBasicMaterial,
+    ShadowMaterial,
     TextureLoader,
     MeshPhongMaterial,
     MeshDepthMaterial,
@@ -283,14 +284,19 @@ class e_threed_class_modelimport {
         this.toolsObject = this.scope.find('.wp3d-tools-object3d');
 
         
+        //FLOOR
+        this.floor = null;
+        this.isFloor = Boolean(this.elementSettings.enable_floor) || true;
+        this.floorOpacity = this.elementSettings.floor_opacity || 0.5;
+        this.floorColor = this.elementSettings.floor_color || '#000000';
 
         //LIGHT
         this.ambientLight = null;
         this.ambientlightColor = 0xFFFFFF; //this.elementSettings.ambientlight_color || 0xFFFFFF;
-        this.ambientlightIntensity = this.elementSettings.light_intensity || 1;
-        this.spotlightIntensity = this.elementSettings.spot_intensity || 1;
-        this.leftspotlightIntensity = this.elementSettings.leftspot_intensity || 0;
-        this.rightspotlightIntensity = this.elementSettings.rightspot_intensity || 0;
+        this.ambientlightIntensity = Number(this.elementSettings.light_intensity) || 1;
+        this.spotlightIntensity = Number(this.elementSettings.spot_intensity) || 1;
+        this.leftspotlightIntensity = Number(this.elementSettings.leftspot_intensity) || 0.01;
+        this.rightspotlightIntensity = Number(this.elementSettings.rightspot_intensity) || 0.01;
 
         this.cameraLight = null;
         this.shadowCameraHelper = null;
@@ -299,6 +305,7 @@ class e_threed_class_modelimport {
         this.rightcameraLight = null;
 
         //HELPERS
+        this.isHelpers = Boolean(this.elementSettings.enableHelpers);
         this.isHelperBox = Boolean(this.elementSettings.helper_box);
         this.isHelperCenter = Boolean(this.elementSettings.helper_center);
         this.isHelperFloor = Boolean(this.elementSettings.helper_floor);
@@ -315,6 +322,7 @@ class e_threed_class_modelimport {
         
         //BOXHELPER
         this.boxHelper = null;
+        this.boxHelperModel = null;
 
 
         // NAVIGATOR
@@ -600,8 +608,41 @@ class e_threed_class_modelimport {
        
         
     }
-
-
+    addFloor(){
+        console.log('addFloor',)
+        if(!this.floor){
+            if(this.isFloor){
+    
+                const floorGeometry = new PlaneGeometry( 20, 20, 20, 20)
+                floorGeometry.rotateX( - Math.PI / 2 );
+                floorGeometry.translate(0,0,0);
+    
+                //const floorMaterial = new MeshBasicMaterial( {color: 0xffff00, side: DoubleSide, wireframe: true} );
+                const floorMaterial = new ShadowMaterial({ color: new Color(this.floorColor), opacity: this.floorOpacity });
+                
+                this.floor = new Mesh( floorGeometry, floorMaterial );
+                this.floor.name = 'Floor';
+                //this.floor.renderOrder = 2;
+                this.floor.receiveShadow = true;
+                this.floor.position.y = (this.ambientPosY+this.default_ambientPosY)+0.003;
+                
+                this.scene.add( this.floor );
+            }
+        }
+    }
+    removeFloor(){
+        if(this.floor){
+            this.removeScene( this.floor ); //new-scenes
+            //this.scene.remove( this.floor );
+            this.floor.geometry.dispose();
+            this.floor.material.dispose();
+            this.floor = null;
+        }
+    }
+    updateFloor(){
+        removeFloor();
+        addFloor();
+    }
     addLight(){
         // const ambientLight = new AmbientLight( 0x000000 );
         // this.scene.add( ambientLight );
@@ -624,11 +665,8 @@ class e_threed_class_modelimport {
         // }else{
         //     this.ambientlightIntensity = this.elementSettings.light_intensity || 1;
         // }
-        this.ambientlightIntensity = this.elementSettings.light_intensity || 1;
-        this.spotlightIntensity = this.elementSettings.spot_intensity || 1;
-        this.leftspotlightIntensity = this.elementSettings.leftspot_intensity || 0;
-        this.rightspotlightIntensity = this.elementSettings.rightspot_intensity || 0;
-        //console.log('al'+this.ambientLight)
+        
+        
         if(!this.ambientLight){
             //alert('al')
             
@@ -642,25 +680,26 @@ class e_threed_class_modelimport {
             //alert(this.elementSettings.sky_environmentimage+' add cameraLight')
             if(!this.cameraLight){
                 this.cameraLight = new DirectionalLight( 0xffffff, this.spotlightIntensity );
-                this.cameraLight.castShadow = true;
-                this.cameraLight.name = 'cl';
-                this.cameraLight.position.set(100,0,100)
+                //this.cameraLight.castShadow = true;
+                this.cameraLight.name = 'spot';
+                this.cameraLight.position.set(0,0,100)
                 this.camera.add( this.cameraLight );
                 
             }
             if(!this.leftcameraLight){
-                this.leftcameraLight = new DirectionalLight( 0xffffff, this.spotlightIntensity );
-                this.leftcameraLight.castShadow = true;
-                this.leftcameraLight.name = 'cl';
-                this.leftcameraLight.position.set(-200,0,100)
+                this.leftcameraLight = new DirectionalLight( 0xffffff, this.leftspotlightIntensity );
+                //this.leftcameraLight.castShadow = true;
+                this.leftcameraLight.name = 'lightLeft';
+                this.leftcameraLight.position.set(-100,0,100)
                 this.camera.add( this.leftcameraLight );
                 
             }
             if(!this.rightcameraLight){
-                this.rightcameraLight = new DirectionalLight( 0xffffff, this.spotlightIntensity );
-                this.rightcameraLight.castShadow = true;
-                this.rightcameraLight.name = 'cl';
-                this.rightcameraLight.position.set(200,0,100)
+               
+                this.rightcameraLight = new DirectionalLight( 0xffffff, this.rightspotlightIntensity );
+                //this.rightcameraLight.castShadow = true;
+                this.rightcameraLight.name = 'lightRight';
+                this.rightcameraLight.position.set(100,0,100)
                 this.camera.add( this.rightcameraLight );
                 
             }
@@ -955,6 +994,7 @@ class e_threed_class_modelimport {
     
     // MODEL ************
     addCube(){
+        //@p Questa è un a funzione per debuggare la scena ed il modello..
         const geometry = new BoxGeometry( 1, 1, 1 ); 
         const material = new MeshBasicMaterial( {color: 0xCCCCCC} ); 
         const cube = new Mesh( geometry, material ); 
@@ -965,7 +1005,6 @@ class e_threed_class_modelimport {
     }
     addModel($fromUpdate = false){
         
-       
         //alert(this.importFormatType)
         //lancio l'importazione del modello in base al formato definito
         
@@ -977,7 +1016,10 @@ class e_threed_class_modelimport {
             
             // GLOW-LIGHT
             //addGlowLight();
-            
+
+            //FLOOR
+            //this.addFloor();
+
             // TRANSFORMS
             if(this.enableTransform){
                 this.changeTransformControl(ob);
@@ -1120,23 +1162,32 @@ class e_threed_class_modelimport {
     // HELPERS
     updateHelpers(){
         // console.log('HelpLight',this.isHelperSpotLight);
-        // console.log(this.scene)
+        
 
         // Box Helper
-        if(this.isHelperBox){
+        if(this.isHelperBox && this.isHelpers){
             if(!this.boxHelper){
-            this.boxHelper = new BoxHelper( this.themodel, 0x0098c7 );
-            this.scene.add( this.boxHelper );
+                this.boxHelper = new BoxHelper( this.themodel, 0x0098c7 );
+                this.scene.add( this.boxHelper );
             }
+            // if(!this.boxHelperModel){
+            //     this.boxHelperModel = new BoxHelper( this.model, 0xFF0000 );
+            //     this.scene.add( this.boxHelperModel );
+            // }
         }else{
             if(this.boxHelper){
                 this.scene.remove( this.boxHelper );
                 this.boxHelper.dispose();
                 this.boxHelper = null;
             }
+            // if(this.boxHelperModel){
+            //     this.scene.remove( this.boxHelperModel );
+            //     this.boxHelperModel.dispose();
+            //     this.boxHelperModel = null;
+            // }
         }
         // Center Helper
-        if(this.isHelperCenter){
+        if(this.isHelperCenter && this.isHelpers){
             if(!this.axesHelper){
             this.axesHelper = new AxesHelper(500);
             this.scene.add( this.axesHelper );
@@ -1149,7 +1200,7 @@ class e_threed_class_modelimport {
             }
         }
         // Floor Helper
-        if(this.isHelperFloor){
+        if(this.isHelperFloor && this.isHelpers){
             if(!this.gridHelper){
             //gridHelper = new GridHelper( 10, 2 );
             this.gridHelper = new PolarGridHelper( );
@@ -1164,7 +1215,7 @@ class e_threed_class_modelimport {
             }
         }
         // Spot Helper
-        if(this.isHelperSpotLight){
+        if(this.isHelperSpotLight && this.isHelpers){
             if(this.cameraLight){
                 if(!this.lightHelper){
                     this.lightHelper = new DirectionalLightHelper( this.cameraLight, 1 );
@@ -1188,18 +1239,19 @@ class e_threed_class_modelimport {
             }
         }
         // LeftSpot Helper
-        if(this.isHelperLeftLight){
+        if(this.isHelperLeftLight && this.isHelpers){
             
         }else{
             
         }
         // RightSpot Helper
-        if(this.isHelperRightLight){
+        if(this.isHelperRightLight && this.isHelpers){
             
         }
         else{
             
         }
+        //console.log(this.scene)
     }
     
     // ---------------------------------------------------
@@ -1834,6 +1886,14 @@ class e_threed_class_modelimport {
             this.mixer.update( delta );
         }
 
+        //HELPERS
+        if(this.boxHelper){
+            this.boxHelper.update();
+        }
+        if(this.boxHelperModel){
+            this.boxHelperModel.update();
+        }
+
         if(this.controls) this.controls.update();
         
         //CONTACT SHADOW
@@ -2265,35 +2325,39 @@ class e_threed_class_modelimport {
         }
         // LIGHT --------------------------------------
         if ('light_intensity' === propertyName) {
-            this.ambientlightIntensity = this.elementSettings.light_intensity || 1;
+            this.ambientlightIntensity = Number(this.elementSettings.light_intensity) || 1;
             
             this.ambientLight.intensity = this.ambientlightIntensity;
             
             this.render();
         }
         if ('spot_intensity' === propertyName) {
-            this.spotlightIntensity = this.elementSettings.spot_intensity || 1;
+            this.spotlightIntensity = Number(this.elementSettings.spot_intensity) || 1;
             
             this.cameraLight.intensity = this.spotlightIntensity;
             
             this.render();
         }
         if ('leftspot_intensity' === propertyName) {
-            this.leftspotlightIntensity = this.elementSettings.leftspot_intensity || 1;
+            this.leftspotlightIntensity = Number(this.elementSettings.leftspot_intensity) || 0.01;
             
-            this.cameraLight.intensity = this.leftspotlightIntensity;
+            this.leftcameraLight.intensity = this.leftspotlightIntensity;
             
             this.render();
         }
         if ('rightspot_intensity' === propertyName) {
-            this.rightspotlightIntensity = this.elementSettings.rightspot_intensity || 1;
+            this.rightspotlightIntensity = Number(this.elementSettings.rightspot_intensity) || 0.01;
             
-            this.cameraLight.intensity = this.rightspotlightIntensity;
+            this.rightcameraLight.intensity = this.rightspotlightIntensity;
             
             this.render();
         }
 
         // HELPERS --------------------------------------
+        if ('enableHelpers' === propertyName) {
+            this.isHelpers = Boolean(this.elementSettings.enableHelpers);
+            this.updateHelpers();
+        }
         if ('helper_box' === propertyName) {
             this.isHelperBox = Boolean(this.elementSettings.helper_box);
             this.updateHelpers();

@@ -21,6 +21,7 @@ import ChooseImage from './ChooseImage.js';
 export default function SkyPanel( prop ) {
 	const { attributes, setAttributes, clientId } = prop.props;
 	const onChangeValue = prop.onChange;
+	const isOpen = Boolean(prop.isOpen);
 	const isEarth = prop.isEarth || false;
 	const { 
 		stars,
@@ -73,7 +74,7 @@ export default function SkyPanel( prop ) {
 	<>
 		<PanelBody 
 		title={ __( 'Sky', 'wp3d-earth' )}
-		initialOpen={false}
+		initialOpen={isOpen}
 		>
 			<SelectControl
 				label="Type"

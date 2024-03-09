@@ -55,4 +55,85 @@ canvas.threed-canvas{
 	background-image: url('../../../assets/img/tools/scale.svg');
 }
 
+// TABS
+// .wp3d-tab-panel{
+	
+// }
+// .wp3d-tab-panel .components-tab-panel__tabs{
 
+// }
+// .wp3d-tab-panel .components-tab-panel__tabs .wp3d-tab{
+// 	border-bottom: 4px solid #f5f5f5;
+// 	padding-left: 35px;
+// }
+// .wp3d-tab-panel .components-tab-panel__tabs .wp3d-tab:before{
+// 	content: '';
+// 	display: block;
+// 	background-repeat: no-repeat;
+// 	width: 20px;
+// 	height: 20px;
+// }
+// .wp3d-tab-panel .components-tab-panel__tabs .wp3d-tab.wp3d-tab-object:before{
+// 	background-image: url('../../../assets/img/tabs/object.svg');
+// }
+// .wp3d-tab-panel .components-tab-panel__tabs .wp3d-tab.wp3d-tab-lights:before{
+// 	background-image: url('../../../assets/img/tabs/light.svg');
+// }
+// .wp3d-tab-panel .components-tab-panel__tabs .wp3d-tab.wp3d-tab-points:before{
+// 	background-image: url('../../../assets/img/tabs/points.svg');
+// }
+.wp3d-tab-panel .components-tab-panel__tabs .wp3d-tab.active-tab{
+	background-color: #f5f5f5;
+	border-bottom: 4px solid #000000;
+}
+.wp3d-tab-panel .components-tab-panel__tab-content {
+	
+}
+.wp3d-tab-panel .components-tab-panel__tab-content .wp3d-tab{
+
+}
+
+// PANEL
+.wp3d-modelimport-list{
+	display: none;
+}
+
+.wp3d-modelimport-list-panel{
+	padding: 15px;
+}
+.wp3d-modelimport-list-panel .wp3d-points-list{
+	display: none;
+}
+.wp3d-modelimport-list-panel .wp3d-lights-list{
+	display: none;
+}
+.wp3d-modelimport-list-panel .wp-block .wp3d-trace .wp3d-trace-name {
+	background-color: #000;
+	margin: 0;
+	padding: 10px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	color: #FFF;
+	border-radius: 5px;
+}
+.wp3d-lights-list-panel .wp-block .wp3d-trace .wp3d-trace-name .dashicon,
+.wp3d-points-list-panel .wp-block .wp3d-trace .wp3d-trace-name .dashicon,
+.wp3d-modelimport-list-panel .wp-block .wp3d-trace .wp3d-trace-name .dashicon{
+	display: flex;
+	align-items: center;
+	height: 20px;
+	margin: 0 10px 0 0;
+}
+.wp3d-lights-list-panel .wp-block .wp3d-trace .wp3d-trace-name,
+.wp3d-points-list-panel .wp-block .wp3d-trace .wp3d-trace-name{
+	margin: 0;
+  	padding-right: 6px;
+	white-space: nowrap;
+}
+
+.wp3d-points-list-panel .wp-block .wp3d-trace .wp3d-trace-label{
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis ellipsis;
+}

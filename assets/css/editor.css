@@ -2,13 +2,13 @@
 .wp-block.wp-block-wp3d-modelimport{
     margin: 0;
 }
-.wp-block.wp-block-wp3d-modelimport .wp3d-trace{
+.wp-block .wp3d-trace{
     margin: 2px 0;
     font-size: 12px !important;
     display: flex;
     align-items: center;
 }
-.wp-block.wp-block-wp3d-modelimport .wp3d-trace .wp3d-trace-name{
+.wp-block .wp3d-trace .wp3d-trace-name{
     display: flex;
     align-items: center;
     
@@ -17,33 +17,37 @@
    
     font-size: 9px;
 }
-.wp-block.wp-block-wp3d-modelimport .wp3d-trace .dashicon{
+.wp-block .wp3d-trace .dashicon{
     padding: 5px;
 }
-/* Points */
-.wp-block-wp3d-model-points3d{
+/* model */
+.wp-block .wp-block-wp3d-model-lights3d, 
+.wp-block wp-block-wp3d-model-points3d{
     padding: 5px;
     margin-top: 5px;
     border-radius: 5px;
-    background-color: rgba(100,100,100,0.1);
+    background-color: rgba(227, 27, 27, 0.1);
 }
-/* Light */
+/* Item */
+.wp-block .wp3d-point3d-itempoint,
 .wp3d-light3d-itemlight{
     padding: 5px;
     margin-top: 5px;
     border-radius: 5px;
     background-color: rgba(100,100,100,0.1);
 }
-/* Point */
-.wp3d-earth3d-itempoint .wp3d-trace{
+/* Trace */
+.wp-block .wp3d-earth3d-itemlight .wp3d-trace,
+.wp-block .wp3d-earth3d-itempoint .wp3d-trace{
     background-color: #FFF;
     border-radius: 5px;
 }
-.wp3d-earth3d-itempoint .wp3d-trace .wp3d-trace-name{
+.wp-block .wp3d-earth3d-itemlight .wp3d-trace .wp3d-trace-name,
+.wp-block .wp3d-earth3d-itempoint .wp3d-trace .wp3d-trace-name{
     background-color: transparent;
 }
 
-
+/* ----------------------------------------- */
 
 /* APPENDER */
 .wp3d-inserter-appender{
@@ -54,6 +58,7 @@
 }
 .wp3d-button-appender.components-button.has-icon{
     width: 100%;
+    margin-top: 10px;
 }
 .wp3d-button-appender.components-button.has-icon .dashicons-plus{
     font-size: 1.5em;

@@ -16,6 +16,10 @@
       "type": "boolean",
       "default": false
     },
+    "locations": {
+      "type": "array",
+      "default": []
+    },
     "countLight": {
       "type": "number",
       "default": 0
@@ -216,11 +220,15 @@
     },
     "leftspot_intensity": {
       "type": "number",
-      "default": 0
+      "default": 0.01
     },
     "rightspot_intensity": {
       "type": "number",
-      "default": 0
+      "default": 0.01
+    },
+    "enableHelpers": {
+      "type": "boolean",
+      "default": false
     },
     "helpers": {
       "type": "array",
@@ -255,6 +263,18 @@
     "helper_rightlight": {
       "type": "boolean",
       "default": false
+    },
+    "enable_floor": {
+      "type": "boolean",
+      "default": false
+    },
+    "floor_opacity": {
+      "type": "number",
+      "default": 0.5
+    },
+    "floor_color": {
+      "type": "string",
+      "default": ""
     },
     "enable_navigator": {
       "type": "boolean",

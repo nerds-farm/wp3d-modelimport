@@ -56,7 +56,11 @@ add_action( 'init', function () {
     if ($license->is_active()) {
         
         register_block_type(__DIR__ . '/build/blocks/modelimport');
-       
+        register_block_type(__DIR__ . '/build/blocks/modelimport/points3d');
+        register_block_type(__DIR__ . '/build/blocks/modelimport/points3d/point3d');
+        register_block_type(__DIR__ . '/build/blocks/modelimport/lights3d');
+        register_block_type(__DIR__ . '/build/blocks/modelimport/lights3d/light3d');
+
         $localized = wp_set_script_translations( 'wp3d-modelimport-editor-script', 'wp3d-blocks', plugin_dir_path( __FILE__ ) . 'languages' );
 
         include_once(__DIR__.DIRECTORY_SEPARATOR.'plugin.php');
