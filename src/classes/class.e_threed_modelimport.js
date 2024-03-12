@@ -306,6 +306,7 @@ class e_threed_class_modelimport {
 
         //HELPERS
         this.isHelpers = Boolean(this.elementSettings.enableHelpers);
+        this.isWireFrame = Boolean(this.elementSettings.helper_wireframe);
         this.isHelperBox = Boolean(this.elementSettings.helper_box);
         this.isHelperCenter = Boolean(this.elementSettings.helper_center);
         this.isHelperFloor = Boolean(this.elementSettings.helper_floor);
@@ -1163,7 +1164,21 @@ class e_threed_class_modelimport {
     updateHelpers(){
         // console.log('HelpLight',this.isHelperSpotLight);
         
-
+        // Wireframe 
+        if(this.isWireFrame && this.isHelpers){
+            this.themodel.traverse( ( child ) => {
+                if ( child.isMesh ){
+                    child.material.wireframe = true;
+                }
+            });
+        
+        }else{
+            this.themodel.traverse( ( child ) => {
+                if ( child.isMesh ){
+                    child.material.wireframe = false;
+                }
+            });
+        }
         // Box Helper
         if(this.isHelperBox && this.isHelpers){
             if(!this.boxHelper){
@@ -2356,6 +2371,10 @@ class e_threed_class_modelimport {
         // HELPERS --------------------------------------
         if ('enableHelpers' === propertyName) {
             this.isHelpers = Boolean(this.elementSettings.enableHelpers);
+            this.updateHelpers();
+        }
+        if ('helper_wireframe' === propertyName) {
+            this.isWireFrame = Boolean(this.elementSettings.helper_wireframe);
             this.updateHelpers();
         }
         if ('helper_box' === propertyName) {

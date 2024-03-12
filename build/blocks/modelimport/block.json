@@ -240,33 +240,37 @@
         "rightlight"
       ]
     },
+    "helper_wireframe": {
+      "type": "boolean",
+      "default": true
+    },
     "helper_box": {
       "type": "boolean",
-      "default": false
+      "default": true
     },
     "helper_center": {
       "type": "boolean",
-      "default": false
+      "default": true
     },
     "helper_floor": {
       "type": "boolean",
-      "default": false
+      "default": true
     },
     "helper_spotlight": {
       "type": "boolean",
-      "default": false
+      "default": true
     },
     "helper_leftlight": {
       "type": "boolean",
-      "default": false
+      "default": true
     },
     "helper_rightlight": {
       "type": "boolean",
-      "default": false
+      "default": true
     },
     "enable_floor": {
       "type": "boolean",
-      "default": false
+      "default": true
     },
     "floor_opacity": {
       "type": "number",

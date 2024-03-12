@@ -126,6 +126,7 @@ export default function Edit( props ) {
 		rightspot_intensity,
 		enableHelpers,
 		helpers,
+		helper_wireframe,
 		helper_box,
 		helper_center,
 		helper_floor,
@@ -1335,6 +1336,11 @@ export default function Edit( props ) {
 							/>
 							{enableHelpers && <>
 								<Divider />
+								<ToggleControl
+									label={ __( 'WireFrame', 'wp3d-blocks' )}
+									checked={ helper_wireframe }
+									onChange={ ( val ) => onChangeValue("helper_wireframe",{ helper_wireframe: val }) }
+								/>
 								<ToggleControl
 									label={ __( 'Box', 'wp3d-blocks' )}
 									checked={ helper_box }

@@ -70,7 +70,7 @@ add_action( 'init', function () {
 
 add_action( 'enqueue_block_editor_assets', function () {
     wp_enqueue_style(
-        'wp3d-editor-stylesheets',
+        'wp3d-modelimport-editor-stylesheets',
         WP3D_MODELIMPORT_PLUGIN_URL . 'assets/css/editor.css',
         [],
         filemtime( WP3D_MODELIMPORT_PLUGIN_DIR . 'assets/css/editor.css' ) 
@@ -107,8 +107,8 @@ add_action( 'wp_enqueue_scripts', 'wp3d_register_plugin_libs' );
 add_action('enqueue_block_editor_assets', 'wp3d_register_plugin_libs');
 
 add_action('admin_enqueue_scripts', function () {
-    wp_enqueue_style('wp3dfg-icons', WP3D_MODELIMPORT_PLUGIN_URL . '/assets/css/wp3d-icons.css', false, '1.0.0');
-    wp_enqueue_style('wp3d-admin', WP3D_MODELIMPORT_PLUGIN_URL . '/assets/css/admin.css', false, '1.0.0');
+    wp_enqueue_style('wp3d-modelimport-icons', WP3D_MODELIMPORT_PLUGIN_URL . '/assets/css/wp3d-icons.css', false, '1.0.0');
+    wp_enqueue_style('wp3d-modelimport-admin', WP3D_MODELIMPORT_PLUGIN_URL . '/assets/css/admin.css', false, '1.0.0');
 });
 
 add_action('wp_enqueue_scripts', 'wp3d_modelimport_custom_javascript');

@@ -8,7 +8,35 @@ canvas.threed-canvas{
     height: 100%;
 }
 
+// BLOCK
+.wp-block-wp3d-modelimport{
+	overflow: hidden;
+	position: relative;
+}
+.wp-block-group:has(.wp-block-wp3d-modelimport) > .wp-block-wp3d-modelimport{
+	width: 100%;
+}
+.wp-block-wp3d-modelimport .wp3d-scene-container{
+	position: relative;
+	display: flex;
+	width: 100%;
+}
+.wp-block-wp3d-modelimport.wp3d-viewport_fixed{
+	position: fixed;
+	left: 0;
+	top: 0;
+	padding: 0;
+	z-index: 0;
+	max-width: 100%;
+	width: 100vw;
+	height: 100vh;
 
+}
+.threed-stats > div{
+	position: absolute !important;
+	top: 5px !important;
+	left: 5px !important;
+}
 
 /* TOOLS */
 :root{

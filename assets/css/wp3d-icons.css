@@ -99,3 +99,6 @@
 .dashicons-controls-wp3d:before { content: '\e82a'; } /* '' */
 .dashicons-deviceorientation-wp3d:before { content: '\e82b'; } /* '' */
 .dashicons-ar-wp3d:before { content: '\e82c'; } /* '' */
+.dashicon-lightpoint-wp3d:before { content: '\e82d'; } /* '' */
+.dashicon-lightdirectional-wp3d:before { content: '\e81c'; } /* '' */
+.dashicon-lightspot-wp3d:before { content: '\e829'; } /* '' */

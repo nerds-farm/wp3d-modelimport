@@ -205,7 +205,21 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			}
 		});
 	}
-
+	const onSetIconLight = (i) => {
+		let l = null;
+		switch(i){
+			case 'pointLight':
+				l = __("Point Light","wp3d-block");
+			break;
+			case 'directionalLight':
+				l = __("Directional Light",	"wp3d-block");
+			break;
+			case 'spotLight':
+				l = __("Spot Light","wp3d-block");
+			break;
+		}
+		return l;
+	}
 	return (
 		<>
 		<div { ...blockProps }>
@@ -214,8 +228,8 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					<span className="wp3d-trace-name">
 						<span className="dashicon dashicons dashicons-light-wp3d"></span> Lighth&nbsp;
 					</span>
-					<span className="wp3d-trace-type">{light_type}</span>
-					<span className="wp3d-trace-color">{light_color}</span>
+					<span className="wp3d-trace-type">{onSetIconLight(light_type)}</span>
+					<span className="wp3d-trace-color"><div className="wp3d-colorpicker" style={{backgroundColor: `${light_color}`}}></div></span>
 					{/* <span><b>&nbsp;X:</b> {geometry_light_posx}</span> 
 					<span><b>&nbsp;Y:</b> {geometry_light_posy}</span> 
 					<span><b>&nbsp;Z:</b> {geometry_light_posz}</span> */}

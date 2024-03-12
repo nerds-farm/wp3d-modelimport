@@ -14,7 +14,13 @@
 		"plugin-zip": "wp-scripts plugin-zip",
 		"start": "wp-scripts start"
 	},
-	"files": [ "wp3d-modelimport.php","plugin.php","assets","build","languages" ],
+	"files": [
+		"wp3d-modelimport.php",
+		"plugin.php",
+		"assets",
+		"build",
+		"languages"
+	],
 	"devDependencies": {
 		"@wordpress/scripts": "^24.6.0"
 	},
